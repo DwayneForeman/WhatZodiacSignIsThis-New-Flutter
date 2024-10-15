@@ -61,15 +61,15 @@ class GameOverDialog {
                               case 1:
                                 Get.back();
                                 Get.back();
-                                Get.to(const Level1Screen());
+                                //Get.to(const Level1Screen());
                               case 2:
                                 Get.back();
                                 Get.back();
-                                Get.to(const Level2Screen());
+                                //Get.to(const Level2Screen());
                               case 3:
                                 Get.back();
                                 Get.back();
-                                Get.to(const Level3Screen());
+                                //Get.to(const Level3Screen());
                             }
                           },
                           text: 'PLAY AGAIN',

@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:whatsignisthis/screens/game_over_dialog.dart';
+import 'package:whatsignisthis/utils/get_image.dart';
+import 'package:whatsignisthis/widgets/game_header.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/get_incorrect_answer_description.dart';
 import 'correct_answer_dialog.dart';
 import 'incorrect_answer_dialog.dart';
 
 class Level1Screen extends StatefulWidget {
-  const Level1Screen({super.key});
+  const Level1Screen({super.key, required this.question});
+  final MapEntry<String, String> question;
 
   @override
   State<Level1Screen> createState() => _Level1ScreenState();
@@ -17,8 +21,8 @@ class Level1Screen extends StatefulWidget {
 
 class _Level1ScreenState extends State<Level1Screen> {
   String selectedAnswer = "";
-  String correctAnswer = "Capricorn";
-  List<String> options = ['Cancer', 'Capricorn', 'Gemini', 'Leo'];
+  String correctAnswer = '';
+  List<String> allSigns = ['Aries', 'Taurus', 'Cancer', 'Gemini', 'Aquarius', 'Virgo', 'Capricorn', 'Leo', 'Libra', 'Pisces', 'Scorpio', 'Sagittarius'];
   List<String> incorrectAnswers = [];
   bool isUsed50 = false;
   final AudioService audioService = AudioService();
@@ -41,9 +45,17 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   late ConfettiController _confettiController;
 
+  late List<String> options;
+
   @override
   void initState() {
     super.initState();
+    correctAnswer = widget.question.key;
+    allSigns.shuffle();
+    allSigns.remove(correctAnswer);
+    options = allSigns.take(3).toList();
+    options.add(correctAnswer);
+    options.shuffle();
     audioService.playSound(
         audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
     correctAnsSounds.shuffle();
@@ -81,97 +93,25 @@ class _Level1ScreenState extends State<Level1Screen> {
                       const EdgeInsets.symmetric(horizontal: 14),
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: width*0.25,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  if (!isUsed50) {
-                                    audioService.playSound(
-                                        audioPath:
-                                        'assets/sounds/balloon-tap.mpeg');
-                                    getRandomIncorrectAnswers();
-                                    isUsed50 = true;
-                                  }
-                                },
-                                child: Image.asset('assets/images/balloon.png',
-                                    width: width * 0.2)),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Container(
-                                width: width * 0.1666,
-                                height: width * 0.1666,
-                                decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage('assets/images/star.png'),
-                                        fit: BoxFit.fill)),
-                                child: Center(
-                                    child: Text('100',
-                                        style: TextStyle(
-                                            fontFamily: "SF-Compact",
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: width * 0.0333,
-                                            color: const Color(0xffFF0909)))),
-                              ),
-                            ),
-                            GestureDetector(
-                                onTap: () async {
-                                  await audioService.playSound(
-                                      audioPath: 'assets/sounds/button-press.mpeg');
-                                  audioService.stopSound();
-                                  Get.back();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Image.asset('assets/images/home-button.png',
-                                      width: width * 0.1638),
-                                ))
-                          ],
-                        )
-                      ),
-                      Image.asset("assets/images/bend-text.png", width: width),
-                      const SizedBox(height: 10),
-                      Container(
-                        width: width,
-                        constraints: BoxConstraints(minHeight: width * 0.64),
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage('assets/images/text-bg.png'),
-                                fit: BoxFit.fill)),
-                        child: Center(
-                            child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 30),
-                          child: Column(
-                            children: [
-                              Text(
-                                "If we don't work out, that's cool, but don't ruin my chances with your friend",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: width * 0.0555,
-                                  fontWeight: FontWeight.w900,
-                                  color: const Color(0xff210FF5),
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Image.asset('assets/images/laugh-emoji.png',
-                                  width: width * 0.105)
-                            ],
-                          ),
-                        )),
-                      ),
+                      GameHeader(
+                          question: widget.question.value,
+                          onBalloonTap: (){
+                            if (!isUsed50) {
+                              audioService.playSound(
+                                  audioPath:
+                                  'assets/sounds/balloon-tap.mpeg');
+                              getRandomIncorrectAnswers();
+                              isUsed50 = true;
+                            }
+                          }),
                       const SizedBox(height: 14),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           optionsContainer(
-                              options[0], "assets/images/cancer.png"),
+                              options[0], getImage(options[0])),
                           optionsContainer(
-                              options[1], "assets/images/capricorn.png"),
+                              options[1], getImage(options[1])),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -179,8 +119,8 @@ class _Level1ScreenState extends State<Level1Screen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           optionsContainer(
-                              options[2], "assets/images/gemini.png"),
-                          optionsContainer(options[3], "assets/images/leo.png"),
+                              options[2], getImage(options[2])),
+                          optionsContainer(options[3], getImage(options[3])),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -207,50 +147,6 @@ class _Level1ScreenState extends State<Level1Screen> {
         ],
       ),
     );
-  }
-
-  // Generate two random incorrect answers and store them in the incorrectAnswers list
-  void getRandomIncorrectAnswers() {
-    setState(() {
-      incorrectAnswers.clear();
-      List<String> tempOptions = List.from(options);
-      tempOptions
-          .remove(correctAnswer); // Remove the correct answer from the pool
-      tempOptions.shuffle();
-      incorrectAnswers =
-          tempOptions.take(2).toList(); // Select two incorrect answers
-    });
-  }
-
-  String getIncorrectDescription(String answer) {
-    switch (answer.toLowerCase()) {
-      case 'aries':
-        return 'Dismissive\nEasily Angered\nRash';
-      case 'aquarius':
-        return 'Impatient\nStubborn\nCaring';
-      case 'cancer':
-        return 'Moody\nAfraid to Blossom\nUnable to Let Go';
-      case 'capricorn':
-        return 'Self-Righteous\nJudgmental\nCold';
-      case 'gemini':
-        return 'Repetitive\nLiars\nPoor Listeners';
-      case 'leo':
-        return 'Egotistic\nVain\nDramatic';
-      case 'libra':
-        return 'Indecisive\nConflict-Avoidant\nEasily Distracted';
-      case 'pisces':
-        return 'Impractical\nTakes on Others Issues\nProjects Guilt';
-      case 'sagittarius':
-        return 'Too Energetic\nUnpredictable\nLoud';
-      case 'scorpio':
-        return 'Manipulative\nHostile\nVengeful';
-      case 'taurus':
-        return 'Cautious\nAntisocial\nLazy';
-      case 'virgo':
-        return 'Knit-Picky\nDetail-Oriented\nSloppy';
-      default:
-        return 'Impatient\nStubborn\nCaring';
-    }
   }
 
   Widget optionsContainer(String label, String imgPath) {
@@ -280,7 +176,7 @@ class _Level1ScreenState extends State<Level1Screen> {
                 context: context,
                 signImage: imgPath,
                 answer: label,
-                description: getIncorrectDescription(label));
+                description: getIncorrectAnswerDescription(label));
           }
           audioService.playerStateStream.listen((playerState) async {
             if (playerState.processingState == ProcessingState.completed) {
@@ -344,6 +240,19 @@ class _Level1ScreenState extends State<Level1Screen> {
               ),
       ),
     );
+  }
+
+  // Generate two random incorrect answers and store them in the incorrectAnswers list
+  void getRandomIncorrectAnswers() {
+    setState(() {
+      incorrectAnswers.clear();
+      List<String> tempOptions = List.from(options);
+      tempOptions
+          .remove(correctAnswer); // Remove the correct answer from the pool
+      tempOptions.shuffle();
+      incorrectAnswers =
+          tempOptions.take(2).toList(); // Select two incorrect answers
+    });
   }
 
 }

@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/get_image.dart';
+import '../widgets/game_header.dart';
 import 'correct_answer_dialog.dart';
 import 'game_over_dialog.dart';
 import 'incorrect_answer_dialog.dart';
 
 class Level3Screen extends StatefulWidget {
-  const Level3Screen({super.key});
+  const Level3Screen({super.key, required this.question});
+  final MapEntry<String, String> question;
 
   @override
   State<Level3Screen> createState() => _Level3ScreenState();
@@ -45,6 +48,8 @@ class _Level3ScreenState extends State<Level3Screen> {
   @override
   void initState() {
     super.initState();
+    correctAnswer = widget.question.key;
+    options.shuffle();
     audioService.playSound(audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
     correctAnsSounds.shuffle();
     randomCorrectSound = correctAnsSounds[0];
@@ -82,104 +87,32 @@ class _Level3ScreenState extends State<Level3Screen> {
                   padding: const EdgeInsets.symmetric(horizontal: 14),
                   child: Column(
                     children: [
-                      SizedBox(
-                          height: width*0.25,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                  onTap: () {
-                                    if (!isUsed50) {
-                                      audioService.playSound(
-                                          audioPath:
-                                          'assets/sounds/balloon-tap.mpeg');
-                                      getRandomIncorrectAnswers();
-                                      isUsed50 = true;
-                                    }
-                                  },
-                                  child: Image.asset('assets/images/balloon.png',
-                                      width: width * 0.2)),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Container(
-                                  width: width * 0.1666,
-                                  height: width * 0.1666,
-                                  decoration: const BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage('assets/images/star.png'),
-                                          fit: BoxFit.fill)),
-                                  child: Center(
-                                      child: Text('100',
-                                          style: TextStyle(
-                                              fontFamily: "SF-Compact",
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: width * 0.0333,
-                                              color: const Color(0xffFF0909)))),
-                                ),
-                              ),
-                              GestureDetector(
-                                  onTap: () async {
-                                    await audioService.playSound(
-                                        audioPath: 'assets/sounds/button-press.mpeg');
-                                    audioService.stopSound();
-                                    Get.back();
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: Image.asset('assets/images/home-button.png',
-                                        width: width * 0.1638),
-                                  ))
-                            ],
-                          )
-                      ),
-                      Image.asset("assets/images/bend-text.png", width: width),
-                      const SizedBox(height: 10),
-                      Container(
-                        width: width,
-                        constraints: BoxConstraints(minHeight: width * 0.64),
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage('assets/images/text-bg.png'),
-                                fit: BoxFit.fill)),
-                        child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 30),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "If we don't work out, that's cool, but don't ruin my chances with your friend",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: width * 0.0555,
-                                      fontWeight: FontWeight.w900,
-                                      color: const Color(0xff210FF5),
-                                      fontFamily: 'Poppins',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Image.asset('assets/images/laugh-emoji.png',
-                                      width: width * 0.105)
-                                ],
-                              ),
-                            )),
-                      ),
+                      GameHeader(
+                          question: widget.question.value,
+                          onBalloonTap: (){
+                            if (!isUsed50) {
+                              audioService.playSound(
+                                  audioPath:
+                                  'assets/sounds/balloon-tap.mpeg');
+                              getRandomIncorrectAnswers();
+                              isUsed50 = true;
+                            }
+                          }),
                       const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           optionsContainer(
-                              options[0], "assets/images/aries.png"),
+                              options[0], getImage(options[0])),
                           const SizedBox(width: 8),
                           optionsContainer(
-                              options[1], "assets/images/taurus.png"),
+                              options[1], getImage(options[1])),
                           const SizedBox(width: 8),
                           optionsContainer(
-                              options[2], "assets/images/cancer.png"),
+                              options[2], getImage(options[2])),
                           const SizedBox(width: 8),
                           optionsContainer(
-                              options[3], "assets/images/gemini.png"),
+                              options[3], getImage(options[3])),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -187,16 +120,16 @@ class _Level3ScreenState extends State<Level3Screen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           optionsContainer(
-                              options[4], "assets/images/aquarius.png"),
+                              options[4], getImage(options[4])),
                           const SizedBox(width: 8),
                           optionsContainer(
-                              options[5], "assets/images/virgo.png"),
+                              options[5], getImage(options[5])),
                           const SizedBox(width: 8),
                           optionsContainer(
-                              options[6], "assets/images/capricorn.png"),
+                              options[6], getImage(options[6])),
                           const SizedBox(width: 8),
                           optionsContainer(
-                              options[7], "assets/images/leo.png"),
+                              options[7], getImage(options[7])),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -204,16 +137,16 @@ class _Level3ScreenState extends State<Level3Screen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           optionsContainer(
-                              options[8], "assets/images/libra.png"),
+                              options[8], getImage(options[8])),
                           const SizedBox(width: 10),
                           optionsContainer(
-                              options[9], "assets/images/pisces.png"),
+                              options[9], getImage(options[9])),
                           const SizedBox(width: 10),
                           optionsContainer(
-                              options[10], "assets/images/scorpio.png"),
+                              options[10], getImage(options[10])),
                           const SizedBox(width: 10),
                           optionsContainer(
-                              options[11], "assets/images/sagittarius.png"),
+                              options[11], getImage(options[11])),
                         ],
                       ),
                       const SizedBox(height: 30),

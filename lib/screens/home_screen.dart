@@ -5,6 +5,7 @@ import 'package:whatsignisthis/screens/high_score_dialog.dart';
 import 'package:whatsignisthis/screens/level1.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/get_random_question.dart';
 import 'level2.dart';
 import 'level3.dart';
 import 'menu.dart';
@@ -100,28 +101,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                        onTap: (){
-                          audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                          precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                          Get.to(const Level1Screen());
+                        onTap: () async {
+                         audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                         precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                          MapEntry<String, String> question = await getRandomQuestion();
+                          Get.to(Level1Screen(question: question));
                         },
                         child: Image.asset('assets/images/Level1-home.png', width: width*0.43)),
                     const SizedBox(width: 10),
                     GestureDetector(
-                        onTap: (){
+                        onTap: () async {
                           audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                           precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                          Get.to(const Level2Screen());
+                          MapEntry<String, String> question = await getRandomQuestion();
+                          Get.to(Level2Screen(question: question));
                         },
                         child: Image.asset('assets/images/level2-home.png', width: width*0.43)),
                   ],
                 ),
                 const SizedBox(height: 20),
                 GestureDetector(
-                    onTap: (){
+                    onTap: () async {
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                       precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                      Get.to(const Level3Screen());
+                      MapEntry<String, String> question = await getRandomQuestion();
+                      Get.to(Level3Screen(question: question));
                     },
                     child: Image.asset('assets/images/level3-home.png', width: width*0.9)),
                 const Spacer(),

@@ -27,6 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> initialize() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? soundOff = prefs.getBool('soundOff');
+    bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
     disableSound = soundOff ?? false;
     audioService.playSound(audioPath: 'assets/sounds/laughing.mpeg');
   }
