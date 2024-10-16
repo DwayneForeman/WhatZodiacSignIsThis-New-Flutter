@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:whatsignisthis/utils/variables.dart';
 
 import '../utils/audio_services.dart';
 
@@ -34,12 +35,14 @@ class GameHeader extends StatelessWidget {
                             image: AssetImage('assets/images/star.png'),
                             fit: BoxFit.fill)),
                     child: Center(
-                        child: Text('100',
+                        child: Obx(() => Text(GlobalVariables.to.points.value.toString(),
                             style: TextStyle(
                                 fontFamily: "SF-Compact",
                                 fontWeight: FontWeight.w900,
                                 fontSize: width * 0.0333,
-                                color: const Color(0xffFF0909)))),
+                                color: const Color(0xffFF0909))
+                        ))
+                    ),
                   ),
                 ),
                 GestureDetector(

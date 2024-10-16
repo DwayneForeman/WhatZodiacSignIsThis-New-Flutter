@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/audio_services.dart';
 import '../utils/open_url.dart';
+import '../utils/variables.dart';
 import 'home_screen.dart';
 import 'onboarding.dart';
 
@@ -17,6 +18,7 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   final AudioService audioService = AudioService();
+  late bool isFirstLaunch;
 
   @override
   void initState() {
@@ -27,9 +29,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> initialize() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? soundOff = prefs.getBool('soundOff');
-    bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
-    disableSound = soundOff ?? false;
+    GlobalVariables.to.disableSound.value = soundOff ?? false;
     audioService.playSound(audioPath: 'assets/sounds/laughing.mpeg');
+    isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+    if(isFirstLaunch){
+      await prefs.setInt('points', 100);
+      GlobalVariables.to.points.value = 100;
+      isFirstLaunch = true;
+      await prefs.setInt('newInstallQuestionToShow', 1);
+      GlobalVariables.to.newInstallQuestionToShow.value = 1;
+    } else {
+      GlobalVariables.to.newInstallQuestionToShow.value = prefs.getInt('newInstallQuestionToShow') ?? 0;
+      GlobalVariables.to.points.value = prefs.getInt('points') ?? 100;
+    }
   }
 
   @override
@@ -57,8 +69,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               GestureDetector(
                 onTap: () {
                   audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                  precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
-                  Get.offAll(const OnboardingScreen());
+                  if(isFirstLaunch) {
+                    precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
+                    Get.offAll(const OnboardingScreen());
+                  } else{
+                    precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                    Get.offAll(() => const HomeScreen());
+                  }
                 },
                 child: Container(
                   width: width * 0.75,

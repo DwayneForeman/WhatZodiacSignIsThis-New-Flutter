@@ -6,6 +6,7 @@ import 'package:whatsignisthis/screens/level1.dart';
 import 'package:whatsignisthis/widgets/gradient_button.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/get_random_question.dart';
 import '../utils/open_url.dart';
 import 'level2.dart';
 import 'level3.dart';
@@ -55,21 +56,22 @@ class GameOverDialog {
                       Image.asset('assets/images/gameover-text.png'),
                       const SizedBox(height: 30),
                       GradientButton(
-                          onTap: (){
+                          onTap: () async {
                             audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                            MapEntry<String, String> question = await getRandomQuestion();
                             switch(replyLevel){
                               case 1:
                                 Get.back();
                                 Get.back();
-                                //Get.to(const Level1Screen());
+                                Get.to(Level1Screen(question: question));
                               case 2:
                                 Get.back();
                                 Get.back();
-                                //Get.to(const Level2Screen());
+                                Get.to(Level2Screen(question: question));
                               case 3:
                                 Get.back();
                                 Get.back();
-                                //Get.to(const Level3Screen());
+                                Get.to(Level3Screen(question: question));
                             }
                           },
                           text: 'PLAY AGAIN',

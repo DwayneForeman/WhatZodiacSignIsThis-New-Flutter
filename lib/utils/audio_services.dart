@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:whatsignisthis/screens/home_screen.dart';
+import 'package:whatsignisthis/utils/variables.dart';
 
 class AudioService {
   final AudioPlayer _player = AudioPlayer();
 
   Future<void> playSound({required String audioPath, bool? loop}) async {
-   if(!disableSound){
+   if(!GlobalVariables.to.disableSound.value){
        try {
       await _player.setAsset(audioPath);
       _player.setLoopMode(loop == true ? LoopMode.one : LoopMode.off);

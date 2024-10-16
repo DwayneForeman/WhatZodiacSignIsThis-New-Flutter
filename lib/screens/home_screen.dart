@@ -3,14 +3,15 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/high_score_dialog.dart';
 import 'package:whatsignisthis/screens/level1.dart';
+import 'package:whatsignisthis/utils/variables.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/get_new_install_jokes.dart';
 import '../utils/get_random_question.dart';
+import '../utils/on_level1_start.dart';
 import 'level2.dart';
 import 'level3.dart';
 import 'menu.dart';
-
-bool disableSound = false;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,20 +50,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           GestureDetector(
                               onTap: () async {
-                                setState(() {
-                                  disableSound = !disableSound;
-                                  audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                                });
+                                GlobalVariables.to.disableSound.value = !GlobalVariables.to.disableSound.value;
+                                audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                                await prefs.setBool('soundOff', disableSound);
+                                await prefs.setBool('soundOff', GlobalVariables.to.disableSound.value);
                               },
-                              child: Image.asset(
-                                disableSound
+                              child: Obx(() => Image.asset(
+                                GlobalVariables.to.disableSound.value
                                     ? 'assets/images/sound-off.png'
                                     : 'assets/images/sound-on.png',
                                 height: width*0.07,
                                 width: width*0.07,
-                              )),
+                              ))),
                           const SizedBox(height: 20),
                           Text("Home",
                               style: TextStyle(
@@ -103,9 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     GestureDetector(
                         onTap: () async {
                          audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                         precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                          MapEntry<String, String> question = await getRandomQuestion();
-                          Get.to(Level1Screen(question: question));
+                         onLevel1Start(context);
                         },
                         child: Image.asset('assets/images/Level1-home.png', width: width*0.43)),
                     const SizedBox(width: 10),

@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:whatsignisthis/screens/carousel_items/carousel3.dart';
 import 'package:whatsignisthis/screens/home_screen.dart';
@@ -59,13 +60,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                 if (carouselController.page == 2) {
                   precacheImage(const AssetImage("assets/images/home-bg.png"), context);
                   Get.offAll(() => const HomeScreen());
                   precacheImage(const AssetImage("assets/images/upgrade-screen-bg.png"), context);
                   Get.to(const UpgradeScreen());
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('isFirstLaunch', false);
                 } else {
                   carouselController.nextPage(
                     duration: const Duration(milliseconds: 500),

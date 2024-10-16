@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:whatsignisthis/screens/game_over_dialog.dart';
+import 'package:whatsignisthis/screens/home_screen.dart';
 import 'package:whatsignisthis/utils/get_image.dart';
 import 'package:whatsignisthis/widgets/game_header.dart';
 
 import '../utils/audio_services.dart';
 import '../utils/get_incorrect_answer_description.dart';
+import '../utils/on_option_click.dart';
+import '../utils/points.dart';
+import '../utils/variables.dart';
 import 'correct_answer_dialog.dart';
 import 'incorrect_answer_dialog.dart';
 
@@ -96,12 +100,13 @@ class _Level1ScreenState extends State<Level1Screen> {
                       GameHeader(
                           question: widget.question.value,
                           onBalloonTap: (){
-                            if (!isUsed50) {
+                            if (!isUsed50 && GlobalVariables.to.points.value >= 5) {
                               audioService.playSound(
                                   audioPath:
                                   'assets/sounds/balloon-tap.mpeg');
                               getRandomIncorrectAnswers();
                               isUsed50 = true;
+                              Points.usePoints(5);
                             }
                           }),
                       const SizedBox(height: 14),
@@ -161,29 +166,8 @@ class _Level1ScreenState extends State<Level1Screen> {
           setState(() {
             selectedAnswer = label;
           });
-          if (selectedAnswer == correctAnswer) {
-            _confettiController.play();
-            audioService.playSound(
-                audioPath:
-                    randomCorrectSound ?? 'assets/sounds/correct-ans1.mpeg');
-            await Future.delayed(const Duration(seconds: 1));
-            CorrectAnswerDialog.showResponseDialog(context, imgPath);
-          } else {
-            audioService.playSound(
-                audioPath: randomIncorrectSound ??
-                    'assets/sounds/incorrect-ans1.mpeg');
-            IncorrectAnswerDialog.showResponseDialog(
-                context: context,
-                signImage: imgPath,
-                answer: label,
-                description: getIncorrectAnswerDescription(label));
-          }
-          audioService.playerStateStream.listen((playerState) async {
-            if (playerState.processingState == ProcessingState.completed) {
-              Get.back();  // Hide the current dialog
-              GameOverDialog.showResponseDialog(context: context, replyLevel: 1);  // Show the Game Over dialog
-            }
-          });
+          audioService.stopSound();
+          onOptionClick(context: context, confettiController: _confettiController, correctAnswer: correctAnswer, imgPath: imgPath, incorrectAnsLable: label, randomCorrectSound: randomCorrectSound ?? 'assets/sounds/correct-ans1.mpeg', randomIncorrectSound: randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mpeg', selectedAnswer: selectedAnswer);
         }
       },
       child: Container(
