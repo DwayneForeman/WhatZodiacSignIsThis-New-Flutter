@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:whatsignisthis/widgets/gradient_button.dart';
 
 import '../utils/audio_services.dart';
@@ -10,7 +9,6 @@ class HighScoreDialog {
   static bool isDialogShown = false;
 
   HighScoreDialog();
-  final AudioService audioService = AudioService();
 
   static void showResponseDialog(BuildContext context) {
     final AudioService audioService = AudioService();
@@ -60,7 +58,7 @@ class HighScoreDialog {
                     Image.asset('assets/images/high-score-text.png', width: width*0.55),
                     const SizedBox(height: 30),
                     const Text('You’ve made it to the charts!\nCongrats on your new score. See how you rank amongst your peers.',
-                    textAlign: TextAlign.center, style: TextStyle(fontFamily: 'SF-Pro', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13)
+                    textAlign: TextAlign.center, style: TextStyle(fontFamily: 'SF-Pro', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15)
                     ),
                     const SizedBox(height: 36),
                     GradientButton(

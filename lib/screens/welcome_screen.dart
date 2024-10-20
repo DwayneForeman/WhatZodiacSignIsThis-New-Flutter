@@ -2,8 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:whatsignisthis/screens/level1.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/get_random_question.dart';
 import '../utils/open_url.dart';
 import '../utils/variables.dart';
 import 'home_screen.dart';
@@ -17,8 +19,9 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  final AudioService audioService = AudioService();
   late bool isFirstLaunch;
+
+  final AudioService audioService = AudioService();
 
   @override
   void initState() {
@@ -67,14 +70,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   height: width * 0.9),
               const Spacer(),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                   if(isFirstLaunch) {
-                    precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
+                    await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
                     Get.offAll(const OnboardingScreen());
                   } else{
-                    precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                    Get.offAll(() => const HomeScreen());
+                    MapEntry<String, String> question = await getRandomQuestion();
+                    await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                    Get.offAll(() => Level1Screen(question: question));
                   }
                 },
                 child: Container(
@@ -100,14 +104,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     style: const TextStyle(
+                      height: 1.5,
                       fontFamily: "Mont",
                       fontWeight: FontWeight.w600,
                       color: Color(0xffffffff),
-                      fontSize: 11,
+                      fontSize: 10,
                     ),
                     children: [
                       const TextSpan(
-                        text: 'By signing up you agree to our ',
+                        text: 'By tapping "Let\'s Play" you agree to our ',
                       ),
                       TextSpan(
                         text: 'Terms of Service.',

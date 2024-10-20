@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import 'game_over_dialog.dart';
 
 class CorrectAnswerDialog {
   static bool isDialogShown = false;

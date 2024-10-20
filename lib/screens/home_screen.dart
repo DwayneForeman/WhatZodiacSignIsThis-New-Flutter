@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/high_score_dialog.dart';
-import 'package:whatsignisthis/screens/level1.dart';
+import 'package:whatsignisthis/utils/disable_sound.dart';
+import 'package:whatsignisthis/utils/start_level.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
 import '../utils/audio_services.dart';
-import '../utils/get_new_install_jokes.dart';
-import '../utils/get_random_question.dart';
 import '../utils/on_level1_start.dart';
-import 'level2.dart';
-import 'level3.dart';
 import 'menu.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   final AudioService audioService = AudioService();
 
   @override
@@ -50,10 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           GestureDetector(
                               onTap: () async {
-                                GlobalVariables.to.disableSound.value = !GlobalVariables.to.disableSound.value;
                                 audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                                SharedPreferences prefs = await SharedPreferences.getInstance();
-                                await prefs.setBool('soundOff', GlobalVariables.to.disableSound.value);
+                                disableSound();
                               },
                               child: Obx(() => Image.asset(
                                 GlobalVariables.to.disableSound.value
@@ -109,9 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     GestureDetector(
                         onTap: () async {
                           audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                          precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                          MapEntry<String, String> question = await getRandomQuestion();
-                          Get.to(Level2Screen(question: question));
+                          await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                          startLevel(2);
                         },
                         child: Image.asset('assets/images/level2-home.png', width: width*0.43)),
                   ],
@@ -120,9 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 GestureDetector(
                     onTap: () async {
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                      precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                      MapEntry<String, String> question = await getRandomQuestion();
-                      Get.to(Level3Screen(question: question));
+                      await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                      startLevel(3);
                     },
                     child: Image.asset('assets/images/level3-home.png', width: width*0.9)),
                 const Spacer(),

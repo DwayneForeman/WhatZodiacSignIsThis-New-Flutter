@@ -1,20 +1,16 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
 
 import '../utils/audio_services.dart';
 import '../utils/get_image.dart';
+import '../utils/on_option_click.dart';
 import '../utils/points.dart';
 import '../utils/variables.dart';
 import '../widgets/game_header.dart';
-import 'correct_answer_dialog.dart';
-import 'game_over_dialog.dart';
-import 'home_screen.dart';
-import 'incorrect_answer_dialog.dart';
 
 class Level3Screen extends StatefulWidget {
   const Level3Screen({super.key, required this.question});
+
   final MapEntry<String, String> question;
 
   @override
@@ -22,43 +18,38 @@ class Level3Screen extends StatefulWidget {
 }
 
 class _Level3ScreenState extends State<Level3Screen> {
-
   String selectedAnswer = "";
-  String correctAnswer = "Capricorn";
-  List<String> options = ['Aries', 'Taurus', 'Cancer', 'Gemini', 'Aquarius', 'Virgo', 'Capricorn', 'Leo', 'Libra', 'Pisces', 'Scorpio', 'Sagittarius'];
+  String correctAnswer = "";
+  List<String> allSigns = List.from(GlobalVariables.allSigns);
   List<String> incorrectAnswers = [];
   bool isUsed50 = false;
-
-  final AudioService audioService = AudioService();
-  List<String> correctAnsSounds = [
-    'assets/sounds/correct-ans1.mpeg',
-    'assets/sounds/correct-ans2.mpeg',
-    'assets/sounds/correct-ans3.mpeg',
-    'assets/sounds/correct-ans4.mpeg',
-  ];
-
-  List<String> incorrectAnsSounds = [
-    'assets/sounds/incorrect-ans1.mpeg',
-    'assets/sounds/incorrect-ans2.mpeg',
-    'assets/sounds/incorrect-ans3.mpeg',
-    'assets/sounds/incorrect-ans4.mpeg',
-  ];
 
   String? randomCorrectSound;
   String? randomIncorrectSound;
   late ConfettiController _confettiController;
 
+  final AudioService audioService = AudioService();
+
   @override
   void initState() {
     super.initState();
+    initialize();
+  }
+
+  void initialize() {
     correctAnswer = widget.question.key;
-    options.shuffle();
-    audioService.playSound(audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
-    correctAnsSounds.shuffle();
-    randomCorrectSound = correctAnsSounds[0];
-    incorrectAnsSounds.shuffle();
-    randomIncorrectSound = incorrectAnsSounds[0];
-    _confettiController = ConfettiController(duration: const Duration(seconds: 1));
+    allSigns.shuffle();
+    audioService.playSound(
+        audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
+    List<String> correctSounds = List.from(GlobalVariables.correctAnsSounds);
+    correctSounds.shuffle();
+    randomCorrectSound = correctSounds[0];
+    List<String> incorrectSounds =
+        List.from(GlobalVariables.incorrectAnsSounds);
+    incorrectSounds.shuffle();
+    randomIncorrectSound = incorrectSounds[0];
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 1));
   }
 
   @override
@@ -81,9 +72,7 @@ class _Level3ScreenState extends State<Level3Screen> {
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('assets/images/home-bg.png'),
-                    fit: BoxFit.fill
-                )
-            ),
+                    fit: BoxFit.fill)),
             child: SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
@@ -91,12 +80,13 @@ class _Level3ScreenState extends State<Level3Screen> {
                   child: Column(
                     children: [
                       GameHeader(
+                          audioService: audioService,
                           question: widget.question.value,
-                          onBalloonTap: (){
-                            if (!isUsed50 && GlobalVariables.to.points.value >= 5) {
+                          onBalloonTap: () {
+                            if (!isUsed50 &&
+                                GlobalVariables.to.points.value >= 5) {
                               audioService.playSound(
-                                  audioPath:
-                                  'assets/sounds/balloon-tap.mpeg');
+                                  audioPath: 'assets/sounds/balloon-tap.mpeg');
                               getRandomIncorrectAnswers();
                               isUsed50 = true;
                               Points.usePoints(5);
@@ -106,51 +96,41 @@ class _Level3ScreenState extends State<Level3Screen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          optionsContainer(
-                              options[0], getImage(options[0])),
+                          optionsContainer(allSigns[0], getImage(allSigns[0])),
                           const SizedBox(width: 8),
-                          optionsContainer(
-                              options[1], getImage(options[1])),
+                          optionsContainer(allSigns[1], getImage(allSigns[1])),
                           const SizedBox(width: 8),
-                          optionsContainer(
-                              options[2], getImage(options[2])),
+                          optionsContainer(allSigns[2], getImage(allSigns[2])),
                           const SizedBox(width: 8),
-                          optionsContainer(
-                              options[3], getImage(options[3])),
+                          optionsContainer(allSigns[3], getImage(allSigns[3])),
                         ],
                       ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          optionsContainer(
-                              options[4], getImage(options[4])),
+                          optionsContainer(allSigns[4], getImage(allSigns[4])),
                           const SizedBox(width: 8),
-                          optionsContainer(
-                              options[5], getImage(options[5])),
+                          optionsContainer(allSigns[5], getImage(allSigns[5])),
                           const SizedBox(width: 8),
-                          optionsContainer(
-                              options[6], getImage(options[6])),
+                          optionsContainer(allSigns[6], getImage(allSigns[6])),
                           const SizedBox(width: 8),
-                          optionsContainer(
-                              options[7], getImage(options[7])),
+                          optionsContainer(allSigns[7], getImage(allSigns[7])),
                         ],
                       ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          optionsContainer(
-                              options[8], getImage(options[8])),
+                          optionsContainer(allSigns[8], getImage(allSigns[8])),
+                          const SizedBox(width: 10),
+                          optionsContainer(allSigns[9], getImage(allSigns[9])),
                           const SizedBox(width: 10),
                           optionsContainer(
-                              options[9], getImage(options[9])),
+                              allSigns[10], getImage(allSigns[10])),
                           const SizedBox(width: 10),
                           optionsContainer(
-                              options[10], getImage(options[10])),
-                          const SizedBox(width: 10),
-                          optionsContainer(
-                              options[11], getImage(options[11])),
+                              allSigns[11], getImage(allSigns[11])),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -164,7 +144,8 @@ class _Level3ScreenState extends State<Level3Screen> {
             alignment: Alignment.topCenter,
             child: ConfettiWidget(
               confettiController: _confettiController,
-              blastDirection: 3.14 / 2, // downwards
+              blastDirection: 3.14 / 2,
+              // downwards
               emissionFrequency: 1,
               numberOfParticles: 20,
               gravity: 0.5,
@@ -183,10 +164,12 @@ class _Level3ScreenState extends State<Level3Screen> {
   void getRandomIncorrectAnswers() {
     setState(() {
       incorrectAnswers.clear();
-      List<String> tempOptions = List.from(options);
-      tempOptions.remove(correctAnswer); // Remove the correct answer from the pool
+      List<String> tempOptions = List.from(allSigns);
+      tempOptions
+          .remove(correctAnswer); // Remove the correct answer from the pool
       tempOptions.shuffle();
-      incorrectAnswers = tempOptions.take(6).toList(); // Select two incorrect answers
+      incorrectAnswers =
+          tempOptions.take(6).toList(); // Select two incorrect answers
     });
   }
 
@@ -233,29 +216,20 @@ class _Level3ScreenState extends State<Level3Screen> {
           setState(() {
             selectedAnswer = label;
           });
-          if(selectedAnswer == correctAnswer){
-            _confettiController.play();
-            audioService.playSound(audioPath: randomCorrectSound ?? 'assets/sounds/correct-ans1.mpeg');
-            await Future.delayed(const Duration(seconds: 1));
-            CorrectAnswerDialog.showResponseDialog(context, imgPath);
-            Points.addPoints(10);
-          } else{
-            audioService.playSound(audioPath: randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mpeg');
-            IncorrectAnswerDialog.showResponseDialog(context: context, signImage: imgPath, answer: label, description: getIncorrectDescription(label));
-            Points.usePoints(10);
-          }
-          audioService.playerStateStream.listen((playerState) async {
-            if(!GlobalVariables.to.disableSound.value){
-              if (playerState.processingState == ProcessingState.completed) {
-                Get.back();  // Hide the current dialog
-                GameOverDialog.showResponseDialog(context: context, replyLevel: 1);  // Show the Game Over dialog
-              }
-            } else {
-              await Future.delayed(const Duration(seconds: 2));
-              Get.back();  // Hide the current dialog
-              GameOverDialog.showResponseDialog(context: context, replyLevel: 1);  // Show the Game Over dialog
-            }
-          });
+          audioService.stopSound();
+          onOptionClick(
+              audioService: audioService,
+              level: 3,
+              context: context,
+              confettiController: _confettiController,
+              correctAnswer: correctAnswer,
+              imgPath: imgPath,
+              incorrectAnsLabel: label,
+              randomCorrectSound:
+                  randomCorrectSound ?? 'assets/sounds/correct-ans1.mpeg',
+              randomIncorrectSound:
+                  randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mpeg',
+              selectedAnswer: selectedAnswer);
         }
       },
       child: Container(
@@ -266,39 +240,42 @@ class _Level3ScreenState extends State<Level3Screen> {
             color: isSelected ? null : const Color(0x30ffffff),
             gradient: isSelected
                 ? const LinearGradient(
-                colors: [Color(0xffF6D365), Color(0xffFDA085)])
+                    colors: [Color(0xffF6D365), Color(0xffFDA085)])
                 : null),
         child: isExcluded
-            ? Center(child: Image.asset('assets/images/cross-with-bg.png', width: width * 0.16, height: width * 0.16)) // Show cross for incorrect answers
+            ? Center(
+                child: Image.asset('assets/images/cross-with-bg.png',
+                    width: width * 0.16,
+                    height: width * 0.16)) // Show cross for incorrect answers
             : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(imgPath,
-                width: width * 0.095, height: width * 0.095),
-            SizedBox(height: width * 0.0167),
-            isSelected
-                ? ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return const LinearGradient(
-                    colors: [Color(0xff6A11CB), Color(0xff2575FC)],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ).createShader(bounds);
-                },
-                child: Text(label,
-                    style: TextStyle(
-                        fontFamily: "SF-Compact",
-                        fontWeight: FontWeight.w900,
-                        color: const Color(0xffffffff),
-                        fontSize: width * 0.028)))
-                : Text(label,
-                style: TextStyle(
-                    fontFamily: "SF-Compact",
-                    fontWeight: FontWeight.w900,
-                    color: const Color(0xffffffff),
-                    fontSize: width * 0.032)),
-          ],
-        ),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(imgPath,
+                      width: width * 0.095, height: width * 0.095),
+                  SizedBox(height: width * 0.0167),
+                  isSelected
+                      ? ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
+                              colors: [Color(0xff6A11CB), Color(0xff2575FC)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ).createShader(bounds);
+                          },
+                          child: Text(label,
+                              style: TextStyle(
+                                  fontFamily: "SF-Compact",
+                                  fontWeight: FontWeight.w900,
+                                  color: const Color(0xffffffff),
+                                  fontSize: width * 0.028)))
+                      : Text(label,
+                          style: TextStyle(
+                              fontFamily: "SF-Compact",
+                              fontWeight: FontWeight.w900,
+                              color: const Color(0xffffffff),
+                              fontSize: width * 0.032)),
+                ],
+              ),
       ),
     );
   }

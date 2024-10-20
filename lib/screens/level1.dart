@@ -1,22 +1,17 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:whatsignisthis/screens/game_over_dialog.dart';
-import 'package:whatsignisthis/screens/home_screen.dart';
 import 'package:whatsignisthis/utils/get_image.dart';
 import 'package:whatsignisthis/widgets/game_header.dart';
 
 import '../utils/audio_services.dart';
-import '../utils/get_incorrect_answer_description.dart';
+import '../utils/get_random_question.dart';
 import '../utils/on_option_click.dart';
 import '../utils/points.dart';
 import '../utils/variables.dart';
-import 'correct_answer_dialog.dart';
-import 'incorrect_answer_dialog.dart';
 
 class Level1Screen extends StatefulWidget {
   const Level1Screen({super.key, required this.question});
+
   final MapEntry<String, String> question;
 
   @override
@@ -26,23 +21,10 @@ class Level1Screen extends StatefulWidget {
 class _Level1ScreenState extends State<Level1Screen> {
   String selectedAnswer = "";
   String correctAnswer = '';
-  List<String> allSigns = ['Aries', 'Taurus', 'Cancer', 'Gemini', 'Aquarius', 'Virgo', 'Capricorn', 'Leo', 'Libra', 'Pisces', 'Scorpio', 'Sagittarius'];
+  String question = '';
   List<String> incorrectAnswers = [];
   bool isUsed50 = false;
-  final AudioService audioService = AudioService();
-  List<String> correctAnsSounds = [
-    'assets/sounds/correct-ans1.mpeg',
-    'assets/sounds/correct-ans2.mpeg',
-    'assets/sounds/correct-ans3.mpeg',
-    'assets/sounds/correct-ans4.mpeg',
-  ];
-
-  List<String> incorrectAnsSounds = [
-    'assets/sounds/incorrect-ans1.mpeg',
-    'assets/sounds/incorrect-ans2.mpeg',
-    'assets/sounds/incorrect-ans3.mpeg',
-    'assets/sounds/incorrect-ans4.mpeg',
-  ];
+  List<String> allSigns = List.from(GlobalVariables.allSigns);
 
   String? randomCorrectSound;
   String? randomIncorrectSound;
@@ -50,23 +32,32 @@ class _Level1ScreenState extends State<Level1Screen> {
   late ConfettiController _confettiController;
 
   late List<String> options;
+  final AudioService audioService = AudioService();
 
   @override
   void initState() {
     super.initState();
+    initialize();
+  }
+
+  void initialize() {
     correctAnswer = widget.question.key;
-    allSigns.shuffle();
+    question = widget.question.value;
     allSigns.remove(correctAnswer);
     options = allSigns.take(3).toList();
     options.add(correctAnswer);
     options.shuffle();
     audioService.playSound(
         audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
-    correctAnsSounds.shuffle();
-    randomCorrectSound = correctAnsSounds[0];
-    incorrectAnsSounds.shuffle();
-    randomIncorrectSound = incorrectAnsSounds[0];
-    _confettiController = ConfettiController(duration: const Duration(seconds: 1));
+    List<String> correctSounds = List.from(GlobalVariables.correctAnsSounds);
+    correctSounds.shuffle();
+    randomCorrectSound = correctSounds[0];
+    List<String> incorrectSounds =
+        List.from(GlobalVariables.incorrectAnsSounds);
+    incorrectSounds.shuffle();
+    randomIncorrectSound = incorrectSounds[0];
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 1));
   }
 
   @override
@@ -93,17 +84,17 @@ class _Level1ScreenState extends State<Level1Screen> {
             child: SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
                   child: Column(
                     children: [
                       GameHeader(
-                          question: widget.question.value,
-                          onBalloonTap: (){
-                            if (!isUsed50 && GlobalVariables.to.points.value >= 5) {
-                              audioService.playSound(
-                                  audioPath:
-                                  'assets/sounds/balloon-tap.mpeg');
+                          audioService: audioService,
+                          question: question,
+                          onBalloonTap: () {
+                            if (!isUsed50 &&
+                                GlobalVariables.to.points.value >= 5) {
+                               audioService.playSound(
+                                  audioPath: 'assets/sounds/balloon-tap.mpeg');
                               getRandomIncorrectAnswers();
                               isUsed50 = true;
                               Points.usePoints(5);
@@ -113,18 +104,15 @@ class _Level1ScreenState extends State<Level1Screen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          optionsContainer(
-                              options[0], getImage(options[0])),
-                          optionsContainer(
-                              options[1], getImage(options[1])),
+                          optionsContainer(options[0], getImage(options[0])),
+                          optionsContainer(options[1], getImage(options[1])),
                         ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          optionsContainer(
-                              options[2], getImage(options[2])),
+                          optionsContainer(options[2], getImage(options[2])),
                           optionsContainer(options[3], getImage(options[3])),
                         ],
                       ),
@@ -139,7 +127,8 @@ class _Level1ScreenState extends State<Level1Screen> {
             alignment: Alignment.topCenter,
             child: ConfettiWidget(
               confettiController: _confettiController,
-              blastDirection: 3.14 / 2, // downwards
+              blastDirection: 3.14 / 2,
+              // downwards
               emissionFrequency: 1,
               numberOfParticles: 20,
               gravity: 0.5,
@@ -167,7 +156,22 @@ class _Level1ScreenState extends State<Level1Screen> {
             selectedAnswer = label;
           });
           audioService.stopSound();
-          onOptionClick(context: context, confettiController: _confettiController, correctAnswer: correctAnswer, imgPath: imgPath, incorrectAnsLable: label, randomCorrectSound: randomCorrectSound ?? 'assets/sounds/correct-ans1.mpeg', randomIncorrectSound: randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mpeg', selectedAnswer: selectedAnswer);
+          await onOptionClick(
+              audioService: audioService,
+              level: 1,
+              context: context,
+              confettiController: _confettiController,
+              correctAnswer: correctAnswer,
+              imgPath: imgPath,
+              incorrectAnsLabel: label,
+              randomCorrectSound:
+                  randomCorrectSound ?? 'assets/sounds/correct-ans1.mpeg',
+              randomIncorrectSound:
+                  randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mpeg',
+              selectedAnswer: selectedAnswer);
+          if(GlobalVariables.to.showNextQuestion.value == true){
+            showNextQuestion();
+          }
         }
       },
       child: Container(
@@ -226,6 +230,29 @@ class _Level1ScreenState extends State<Level1Screen> {
     );
   }
 
+  Future<void> showNextQuestion() async {
+    MapEntry<String, String> randomQuestion = await getRandomQuestion();
+    setState(() {
+      correctAnswer = randomQuestion.key;
+      question = randomQuestion.value;
+      selectedAnswer = '';
+      incorrectAnswers = [];
+      isUsed50 = false;
+      allSigns = List.from(GlobalVariables.allSigns);
+      allSigns.remove(correctAnswer);
+      options = allSigns.take(3).toList();
+      options.add(correctAnswer);
+      options.shuffle();
+      List<String> correctSounds = List.from(GlobalVariables.correctAnsSounds);
+      correctSounds.shuffle();
+      randomCorrectSound = correctSounds[0];
+      List<String> incorrectSounds =
+      List.from(GlobalVariables.incorrectAnsSounds);
+      incorrectSounds.shuffle();
+      randomIncorrectSound = incorrectSounds[0];
+    });
+  }
+
   // Generate two random incorrect answers and store them in the incorrectAnswers list
   void getRandomIncorrectAnswers() {
     setState(() {
@@ -238,5 +265,4 @@ class _Level1ScreenState extends State<Level1Screen> {
           tempOptions.take(2).toList(); // Select two incorrect answers
     });
   }
-
 }

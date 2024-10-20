@@ -64,49 +64,16 @@ class _HowToPlayState extends State<HowToPlay> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Stack(
-                            children: [
-                              ShaderMask(
-                                shaderCallback: (Rect bounds) {
-                                  return const LinearGradient(
-                                    colors: [
-                                      Color(0xffB721FF),
-                                      Color(0xff21D4FD)
-                                    ],
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                  ).createShader(bounds);
-                                },
-                                child: const Text(
-                                  "Missions",
-                                  style: TextStyle(
-                                      fontFamily: "Cherry",
-                                      fontSize: 32,
-                                      color: Colors.white),
-                                ),
-                              ),
-                              Text(
-                                "Missions",
-                                style: TextStyle(
-                                  fontFamily: "Cherry",
-                                  fontSize: 32,
-                                  foreground: Paint()
-                                    ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 1.7
-                                    ..color = const Color(0xffF2F2F2),
-                                ),
-                              ),
-                            ],
-                          ),
+                          Image.asset('assets/images/mission-text.png', width: 108),
                           const SizedBox(height: 10),
                           const Text(
-                              "You'll encounter a randomly generated text meme along with a set of 4 (Level 1), 8 (Level 2), or 12 (Level 3) random zodiac signs. \nYour mission? Pick the zodiac sign that perfectly matches the amusingly flawed traits described in the text meme!",
+                              "You'll encounter a randomly generated text meme along with a set of 4 (Level 1), 8 (Level 2), or 12 (Level 3) random zodiac signs.\n\nYour mission? Pick the zodiac sign most likely to do or say what’s described in the text meme!",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontFamily: "SF-Compact",
                                   fontWeight: FontWeight.w900,
                                   color: Color(0xffffffff),
-                                  fontSize: 18)),
+                                  fontSize: 16)),
                           const SizedBox(height: 20),
                         ],
                       ),

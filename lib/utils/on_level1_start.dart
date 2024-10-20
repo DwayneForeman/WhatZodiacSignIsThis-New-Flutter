@@ -7,17 +7,26 @@ import 'get_new_install_jokes.dart';
 import 'get_random_question.dart';
 
 Future<void> onLevel1Start(BuildContext context) async {
-  precacheImage(const AssetImage("assets/images/home-bg.png"), context);
   MapEntry<String, String> question;
-  switch(GlobalVariables.to.newInstallQuestionToShow.value){
-    case 1:
-      question = await getNthKeyValuePair(0);
-    case 2:
-      question = await getNthKeyValuePair(1);
-    case 3:
-      question = await getNthKeyValuePair(2);
-    default:
-      question = await getRandomQuestion();
+  // If user is new and not played first 3 questions, then show first 3 questions
+  // according to the index
+  if(GlobalVariables.to.newInstallQuestionToShow.value != 0)
+  {
+    switch (GlobalVariables.to.newInstallQuestionToShow.value) {
+      case 1:
+        question = await getNthKeyValuePair(0);
+      case 2:
+        question = await getNthKeyValuePair(1);
+      case 3:
+        question = await getNthKeyValuePair(2);
+      default:
+        question = await getRandomQuestion();
+    }
   }
-  Get.to(Level1Screen(question: question));
+  //
+  else{
+    question = await getRandomQuestion();
+  }
+  await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+  Get.offAll(Level1Screen(question: question));
 }

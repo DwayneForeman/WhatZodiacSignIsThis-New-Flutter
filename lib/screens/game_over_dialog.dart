@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:whatsignisthis/screens/home_screen.dart';
 import 'package:whatsignisthis/screens/level1.dart';
+import 'package:whatsignisthis/utils/variables.dart';
 import 'package:whatsignisthis/widgets/gradient_button.dart';
 
 import '../utils/audio_services.dart';
@@ -15,10 +16,8 @@ class GameOverDialog {
   static bool isDialogShown = false;
 
   GameOverDialog();
-  final AudioService audioService = AudioService();
 
-  static void showResponseDialog({required BuildContext context, required int replyLevel}) {
-    final AudioService audioService = AudioService();
+  static void showResponseDialog({required BuildContext context, required int replyLevel, required AudioService audioService}) {
     double width = MediaQuery.of(context).size.width;
     showDialog(
       barrierDismissible: false,
@@ -58,20 +57,15 @@ class GameOverDialog {
                       GradientButton(
                           onTap: () async {
                             audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                            GlobalVariables.to.showNextQuestion.value = true;
                             MapEntry<String, String> question = await getRandomQuestion();
                             switch(replyLevel){
                               case 1:
-                                Get.back();
-                                Get.back();
-                                Get.to(Level1Screen(question: question));
+                                Get.offAll(Level1Screen(question: question,));
                               case 2:
-                                Get.back();
-                                Get.back();
-                                Get.to(Level2Screen(question: question));
+                                Get.offAll(Level2Screen(question: question));
                               case 3:
-                                Get.back();
-                                Get.back();
-                                Get.to(Level3Screen(question: question));
+                                Get.offAll(Level3Screen(question: question));
                             }
                           },
                           text: 'PLAY AGAIN',
