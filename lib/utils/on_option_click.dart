@@ -88,14 +88,16 @@ Future<void> onOptionClick({required BuildContext context, required String selec
     //if game is over, then show game over dialog
     if(GlobalVariables.to.isGameOver.value == true){
       Get.back(); // Hide the current dialog
+      //await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
       GameOverDialog.showResponseDialog(
         audioService: audioService,
           context: context, replyLevel: level); // Show the Game Over dialog
       //if game is over, revert points back to 100
       GlobalVariables.to.points.value = 100;
-      prefs.setInt('points', 100);
+      await prefs.setInt('points', 100);
       //make the value of game over to false, so it should not show the game over dialog
       //for next game play
+      await Future.delayed(const Duration(seconds: 1));
       GlobalVariables.to.isGameOver.value = false;
       GlobalVariables.to.showNextQuestion.value = false;
     }

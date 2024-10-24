@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/audio_services.dart';
 import '../utils/get_image.dart';
+import '../utils/get_random_question.dart';
 import '../utils/on_option_click.dart';
 import '../utils/points.dart';
 import '../utils/variables.dart';
@@ -20,6 +21,7 @@ class Level3Screen extends StatefulWidget {
 class _Level3ScreenState extends State<Level3Screen> {
   String selectedAnswer = "";
   String correctAnswer = "";
+  String question = '';
   List<String> allSigns = List.from(GlobalVariables.allSigns);
   List<String> incorrectAnswers = [];
   bool isUsed50 = false;
@@ -38,6 +40,7 @@ class _Level3ScreenState extends State<Level3Screen> {
 
   void initialize() {
     correctAnswer = widget.question.key;
+    question = widget.question.value;
     allSigns.shuffle();
     audioService.playSound(
         audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
@@ -81,7 +84,7 @@ class _Level3ScreenState extends State<Level3Screen> {
                     children: [
                       GameHeader(
                           audioService: audioService,
-                          question: widget.question.value,
+                          question: question,
                           onBalloonTap: () {
                             if (!isUsed50 &&
                                 GlobalVariables.to.points.value >= 5) {
@@ -230,6 +233,9 @@ class _Level3ScreenState extends State<Level3Screen> {
               randomIncorrectSound:
                   randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mpeg',
               selectedAnswer: selectedAnswer);
+          if(GlobalVariables.to.showNextQuestion.value == true){
+            showNextQuestion();
+          }
         }
       },
       child: Container(
@@ -278,5 +284,25 @@ class _Level3ScreenState extends State<Level3Screen> {
               ),
       ),
     );
+  }
+
+  Future<void> showNextQuestion() async {
+    MapEntry<String, String> randomQuestion = await getRandomQuestion();
+    setState(() {
+      correctAnswer = randomQuestion.key;
+      question = randomQuestion.value;
+      selectedAnswer = '';
+      incorrectAnswers = [];
+      isUsed50 = false;
+      allSigns = List.from(GlobalVariables.allSigns);
+      allSigns.shuffle();
+      List<String> correctSounds = List.from(GlobalVariables.correctAnsSounds);
+      correctSounds.shuffle();
+      randomCorrectSound = correctSounds[0];
+      List<String> incorrectSounds =
+      List.from(GlobalVariables.incorrectAnsSounds);
+      incorrectSounds.shuffle();
+      randomIncorrectSound = incorrectSounds[0];
+    });
   }
 }

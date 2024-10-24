@@ -5,8 +5,10 @@ import 'package:whatsignisthis/utils/disable_sound.dart';
 import 'package:whatsignisthis/utils/start_level.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
+import '../utils/add_score.dart';
 import '../utils/audio_services.dart';
 import '../utils/on_level1_start.dart';
+import '../utils/show_leaderboard.dart';
 import 'menu.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -73,6 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: (){
                           audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                           HighScoreDialog.showResponseDialog(context);
+                          //showLeaderboard();
+                          //submitScore(105);
                         },
                         child: Image.asset('assets/images/stats-icon.png', width: width*0.12, height: width*0.12)),
                     const SizedBox(width: 12),

@@ -1,14 +1,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/level1.dart';
+import 'package:whatsignisthis/utils/show_leaderboard.dart';
 
+import '../subscription/purchase_api.dart';
+import '../utils/add_score.dart';
 import '../utils/audio_services.dart';
 import '../utils/get_random_question.dart';
 import '../utils/open_url.dart';
 import '../utils/variables.dart';
-import 'home_screen.dart';
 import 'onboarding.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -27,7 +30,32 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void initState() {
     super.initState();
     initialize();
+    //fetchPrices();
+    //signIn();
   }
+
+  Future<void> fetchPrices() async {
+    final offerings = await PurchaseApi.fetchOffers();
+
+    if (offerings.isEmpty) {
+      debugPrint('Error Fetching Prices');
+    } else {
+      final packages = offerings
+          .map((offer) => offer.availablePackages)
+          .expand((pair) => pair)
+          .toList();
+     print(packages[0].storeProduct);
+    }
+  }
+
+  Future<void> signIn() async {
+    bool isSignedIn = await GameAuth.isSignedIn;
+    if (!isSignedIn) {
+      final result = await GameAuth.signIn();
+      print(result);
+    }
+  }
+
 
   Future<void> initialize() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
