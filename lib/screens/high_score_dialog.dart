@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:whatsignisthis/widgets/gradient_button.dart';
 
 import '../utils/audio_services.dart';
 import '../utils/open_url.dart';
+import '../utils/show_leaderboard.dart';
 
 class HighScoreDialog {
   static bool isDialogShown = false;
@@ -72,22 +74,28 @@ class HighScoreDialog {
                         btnClrs: const [Color(0xffB3FFAB), Color(0xff12FFF7)],
                         txtClr: Colors.black),
                     const SizedBox(height: 12),
-                    // GradientButton(
-                    //     onTap: (){
-                    //       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                    //     },
-                    //     text: 'VIEW RANKINGS',
-                    //     fontSize: 18,
-                    //     width: width * 0.64,
-                    //     height: 70,
-                    //     btnClrs: const [
-                    //       Color(0xffFDFBFB),
-                    //       Color(0xffEBEDEE)
-                    //     ],
-                    //     textGradient: const [
-                    //       Color(0xff6A11CB),
-                    //       Color(0xff2575FC)
-                    //     ]),
+                    GradientButton(
+                        onTap: () async {
+                          audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                          if(await GamesServices.isSignedIn) {
+                            showLeaderboard();
+                          } else {
+                            await GamesServices.signIn();
+                            showLeaderboard();
+                          }
+                        },
+                        text: 'VIEW RANKINGS',
+                        fontSize: 18,
+                        width: width * 0.64,
+                        height: 70,
+                        btnClrs: const [
+                          Color(0xffFDFBFB),
+                          Color(0xffEBEDEE)
+                        ],
+                        textGradient: const [
+                          Color(0xff6A11CB),
+                          Color(0xff2575FC)
+                        ]),
                   ],
                 ),
               ),

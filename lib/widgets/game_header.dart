@@ -57,7 +57,7 @@ class GameHeader extends StatelessWidget {
                         await audioService.playSound(
                             audioPath: 'assets/sounds/button-press.mpeg');
                         audioService.stopSound();
-                        precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                        await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
                         Get.offAll(const HomeScreen());
                       },
                       child: Padding(

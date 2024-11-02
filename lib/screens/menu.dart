@@ -65,9 +65,9 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                 //     iconPath: "assets/images/notification-icon.png",
                 //     iconSize: 29),
                 MenuRow(
-                    onClick: (){
+                    onClick: () async{
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                      precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
+                      await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
                       Get.off(const HowToPlay());
                     },
                     title: "How To Play",

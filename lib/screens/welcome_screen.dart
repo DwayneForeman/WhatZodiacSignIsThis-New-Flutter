@@ -112,7 +112,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
                     Get.offAll(const OnboardingScreen());
                   } else{
-                    print(subscriptionController.entitlement.value);
+                    await SubscriptionController().refreshCustomerInfo();
+                    debugPrint(subscriptionController.entitlement.value.toString());
                     if(GlobalVariables.to.newInstallQuestionToShow.value != 0 || subscriptionController.entitlement.value == Entitlement.premium) {
                       onLevel1Start(context);
                     } else {

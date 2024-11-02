@@ -4,7 +4,6 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
 import 'package:whatsignisthis/utils/add_score.dart';
@@ -15,6 +14,7 @@ import '../screens/correct_answer_dialog.dart';
 import '../screens/game_over_dialog.dart';
 import '../screens/high_score_dialog.dart';
 import '../screens/incorrect_answer_dialog.dart';
+import '../subscription/subscription_controller.dart';
 import 'audio_services.dart';
 import 'get_incorrect_answer_description.dart';
 
@@ -65,34 +65,32 @@ Future<void> onOptionClick({required BuildContext context, required String selec
   // when sound effect played completely. But if user disabled the sound, then we
   // show next question after 2 seconds.
 
-     // Checking audio player state
-    audioService.playerStateStream.listen((playerState) async {
+
       // if sound is not disabled
     if (!GlobalVariables.to.disableSound.value) {
-         //if sound finished its playing
-        if (playerState.processingState == ProcessingState.completed) {
+          await Future.delayed(const Duration(seconds: 3));
           await gameOverCheck(context, level);
           audioService.playSound(
               audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
-        }
     }
     // if sound is disabled
     else {
       await Future.delayed(const Duration(seconds: 2));
       gameOverCheck(context, level);
     }
-  });
   }
 
   // This function will check if the game is over or not. If game is over, then it will
  // show game over dialog, otherwise it will show next random question.
   Future<void> gameOverCheck(BuildContext context, int level) async {
+    final SubscriptionController subscriptionController = Get.put(SubscriptionController());
+
     final AudioService audioService = AudioService();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //if game is over, then show game over dialog
     if(GlobalVariables.to.isGameOver.value == true){
       Get.back(); // Hide the current dialog
-      //await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
+      await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
       GameOverDialog.showResponseDialog(
         audioService: audioService,
           context: context, replyLevel: level); // Show the Game Over dialog
@@ -109,8 +107,9 @@ Future<void> onOptionClick({required BuildContext context, required String selec
     else {
       // if user is new, and he answered first 3 new user questions, then he'll
       // be redirected to upgrade screen.
-      if(GlobalVariables.to.newInstallQuestionToShow.value > 3){
+      if(GlobalVariables.to.newInstallQuestionToShow.value > 3 && subscriptionController.entitlement.value == Entitlement.free){
         Get.back();
+        await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
         Get.offAll(const UpgradeScreen(showClose: false, goBack: true));
         // make new questions to show to zero so it should show random questions
         // instead of first 3 new user questions.
