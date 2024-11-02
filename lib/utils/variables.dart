@@ -6,9 +6,11 @@ class GlobalVariables {
   static GlobalVariables get to => Get.find<GlobalVariables>();
 
   RxInt points = 0.obs;
+  RxInt highScores = 100.obs;
   RxInt newInstallQuestionToShow = 3.obs;
   RxBool disableSound = false.obs;
   RxBool isGameOver = false.obs;
+  RxBool showHighScoreDialog = true.obs;
   RxBool showNextQuestion = true.obs;
 
   static List<String> correctAnsSounds = [

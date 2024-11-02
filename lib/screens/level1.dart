@@ -4,6 +4,7 @@ import 'package:whatsignisthis/utils/get_image.dart';
 import 'package:whatsignisthis/widgets/game_header.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/get_new_install_jokes.dart';
 import '../utils/get_random_question.dart';
 import '../utils/on_option_click.dart';
 import '../utils/points.dart';
@@ -231,7 +232,15 @@ class _Level1ScreenState extends State<Level1Screen> {
   }
 
   Future<void> showNextQuestion() async {
-    MapEntry<String, String> randomQuestion = await getRandomQuestion();
+    MapEntry<String, String> randomQuestion;
+      if(GlobalVariables.to.newInstallQuestionToShow.value == 2) {
+        randomQuestion = await getNthKeyValuePair(1);
+      } else if(GlobalVariables.to.newInstallQuestionToShow.value == 3){
+        randomQuestion = await getNthKeyValuePair(2);
+      } else {
+        randomQuestion = await getRandomQuestion();
+      }
+      print(GlobalVariables.to.newInstallQuestionToShow.value);
     setState(() {
       correctAnswer = randomQuestion.key;
       question = randomQuestion.value;

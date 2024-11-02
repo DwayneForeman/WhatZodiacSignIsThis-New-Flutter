@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:whatsignisthis/screens/level1.dart';
-import 'package:whatsignisthis/utils/show_leaderboard.dart';
+import 'package:whatsignisthis/screens/upgrade_screen.dart';
+import 'package:whatsignisthis/utils/on_level1_start.dart';
 
-import '../subscription/purchase_api.dart';
-import '../utils/add_score.dart';
+import '../subscription/subscription_controller.dart';
 import '../utils/audio_services.dart';
-import '../utils/get_random_question.dart';
 import '../utils/open_url.dart';
+import '../utils/play_games_signin.dart';
 import '../utils/variables.dart';
 import 'onboarding.dart';
 
@@ -25,36 +24,28 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   late bool isFirstLaunch;
 
   final AudioService audioService = AudioService();
+  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
 
   @override
   void initState() {
     super.initState();
     initialize();
-    //fetchPrices();
-    //signIn();
   }
 
-  Future<void> fetchPrices() async {
-    final offerings = await PurchaseApi.fetchOffers();
+  // Future<void> fetchPrices() async {
+  //   final offerings = await PurchaseApi.fetchOffers();
+  //
+  //   if (offerings.isEmpty) {
+  //     debugPrint('Error Fetching Prices');
+  //   } else {
+  //     final packages = offerings
+  //         .map((offer) => offer.availablePackages)
+  //         .expand((pair) => pair)
+  //         .toList();
+  //    //print(packages[0].storeProduct);
+  //   }
+  // }
 
-    if (offerings.isEmpty) {
-      debugPrint('Error Fetching Prices');
-    } else {
-      final packages = offerings
-          .map((offer) => offer.availablePackages)
-          .expand((pair) => pair)
-          .toList();
-     print(packages[0].storeProduct);
-    }
-  }
-
-  Future<void> signIn() async {
-    bool isSignedIn = await GameAuth.isSignedIn;
-    if (!isSignedIn) {
-      final result = await GameAuth.signIn();
-      print(result);
-    }
-  }
 
 
   Future<void> initialize() async{
@@ -62,6 +53,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     bool? soundOff = prefs.getBool('soundOff');
     GlobalVariables.to.disableSound.value = soundOff ?? false;
     audioService.playSound(audioPath: 'assets/sounds/laughing.mpeg');
+    playGamesSignin();
     isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
     if(isFirstLaunch){
       await prefs.setInt('points', 100);
@@ -73,6 +65,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       GlobalVariables.to.newInstallQuestionToShow.value = prefs.getInt('newInstallQuestionToShow') ?? 0;
       GlobalVariables.to.points.value = prefs.getInt('points') ?? 100;
     }
+
+    //High Score
+    int score;
+    if(await GamesServices.isSignedIn) {
+      score = await GamesServices.getPlayerScore(androidLeaderboardID: 'CgkImMyHs-MNEAIQAQ') ?? 100;
+    } else{
+      score = 100;
+    }
+    if(prefs.containsKey('high_scores')){
+      GlobalVariables.to.highScores.value = prefs.getInt('high_scores')!;
+    } else {
+      prefs.setInt("high_scores", score);
+      GlobalVariables.to.highScores.value = score;
+      debugPrint(GlobalVariables.to.highScores.value.toString());
+    }
+
   }
 
   @override
@@ -104,9 +112,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
                     Get.offAll(const OnboardingScreen());
                   } else{
-                    MapEntry<String, String> question = await getRandomQuestion();
-                    await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                    Get.offAll(() => Level1Screen(question: question));
+                    print(subscriptionController.entitlement.value);
+                    if(GlobalVariables.to.newInstallQuestionToShow.value != 0 || subscriptionController.entitlement.value == Entitlement.premium) {
+                      onLevel1Start(context);
+                    } else {
+                      await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
+                      Get.offAll(const UpgradeScreen(showClose: false, goBack: true));
+                    }
                   }
                 },
                 child: Container(

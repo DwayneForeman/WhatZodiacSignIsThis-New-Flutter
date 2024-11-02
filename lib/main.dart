@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'What Sign Is This',
+      title: 'What Sign Is This?',
       home: WelcomeScreen(),
     );
   }

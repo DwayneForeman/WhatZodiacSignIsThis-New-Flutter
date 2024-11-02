@@ -57,13 +57,13 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                     title: "Home",
                     iconPath: "assets/images/home-icon.png",
                     iconSize: 28),
-                MenuRow(
-                    onClick: (){
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                    },
-                    title: "Notifications",
-                    iconPath: "assets/images/notification-icon.png",
-                    iconSize: 29),
+                // MenuRow(
+                //     onClick: (){
+                //       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                //     },
+                //     title: "Notifications",
+                //     iconPath: "assets/images/notification-icon.png",
+                //     iconSize: 29),
                 MenuRow(
                     onClick: (){
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');

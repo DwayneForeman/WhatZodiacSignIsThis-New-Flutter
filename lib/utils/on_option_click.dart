@@ -2,15 +2,18 @@ import 'dart:async';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
+import 'package:whatsignisthis/utils/add_score.dart';
 import 'package:whatsignisthis/utils/points.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
 import '../screens/correct_answer_dialog.dart';
 import '../screens/game_over_dialog.dart';
+import '../screens/high_score_dialog.dart';
 import '../screens/incorrect_answer_dialog.dart';
 import 'audio_services.dart';
 import 'get_incorrect_answer_description.dart';
@@ -37,7 +40,7 @@ Future<void> onOptionClick({required BuildContext context, required String selec
         audioPath: randomCorrectSound); //play random sound effect
     await Future.delayed(const Duration(seconds: 1));
     CorrectAnswerDialog.showResponseDialog(context, imgPath); //Show correct answers dialog
-    Points.addPoints(10); // Add 10 points
+    await Points.addPoints(10); // Add 10 points
   }
   // User click the wrong answer
   else {
@@ -53,6 +56,7 @@ Future<void> onOptionClick({required BuildContext context, required String selec
     // if Points are zero or less, the game will be over.
     if(GlobalVariables.to.points.value <= 0) {
       GlobalVariables.to.isGameOver.value = true;
+      GlobalVariables.to.showHighScoreDialog.value = true;
     }
   }
 
@@ -107,7 +111,7 @@ Future<void> onOptionClick({required BuildContext context, required String selec
       // be redirected to upgrade screen.
       if(GlobalVariables.to.newInstallQuestionToShow.value > 3){
         Get.back();
-        Get.offAll(const UpgradeScreen());
+        Get.offAll(const UpgradeScreen(showClose: false, goBack: true));
         // make new questions to show to zero so it should show random questions
         // instead of first 3 new user questions.
         GlobalVariables.to.newInstallQuestionToShow.value = 0;
@@ -115,6 +119,16 @@ Future<void> onOptionClick({required BuildContext context, required String selec
       } else {
         //hide dialog
         Get.back();
+        if(GlobalVariables.to.points.value > GlobalVariables.to.highScores.value){
+          GlobalVariables.to.highScores.value = GlobalVariables.to.points.value;
+          if(await GamesServices.isSignedIn) {
+            submitScore(GlobalVariables.to.points.value);
+            if(GlobalVariables.to.showHighScoreDialog.value == true){
+              HighScoreDialog.showResponseDialog(context);
+              GlobalVariables.to.showHighScoreDialog.value = false;
+            }
+          }
+        }
     }
     }
   }

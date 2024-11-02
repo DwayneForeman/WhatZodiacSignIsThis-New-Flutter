@@ -1,12 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:whatsignisthis/screens/carousel_items/carousel3.dart';
-import 'package:whatsignisthis/screens/upgrade_screen.dart';
 
 import '../utils/audio_services.dart';
+import '../utils/on_level1_start.dart';
 import 'carousel_items/carousel1.dart';
 import 'carousel_items/carousel2.dart';
 
@@ -63,8 +62,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onTap: () async {
                 audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                 if (carouselController.page == 2) {
-                  await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
-                  Get.offAll(const UpgradeScreen());
+                  await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                  onLevel1Start(context);
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   await prefs.setBool('isFirstLaunch', false);
                 } else {

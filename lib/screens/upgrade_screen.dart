@@ -3,11 +3,16 @@ import 'package:get/get.dart';
 import 'package:whatsignisthis/screens/level1.dart';
 import 'package:whatsignisthis/utils/open_url.dart';
 
+import '../subscription/purchase_api.dart';
+import '../subscription/subscription_controller.dart';
 import '../utils/audio_services.dart';
 import '../utils/get_random_question.dart';
+import 'home_screen.dart';
 
 class UpgradeScreen extends StatefulWidget {
-  const UpgradeScreen({super.key});
+  const UpgradeScreen({super.key, required this.showClose, required this.goBack});
+  final bool showClose;
+  final bool goBack;
 
   @override
   State<UpgradeScreen> createState() => _UpgradeScreenState();
@@ -16,6 +21,7 @@ class UpgradeScreen extends StatefulWidget {
 class _UpgradeScreenState extends State<UpgradeScreen> {
 
   final AudioService audioService = AudioService();
+  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +30,12 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
     return Scaffold(
       body: PopScope(
         canPop: false,
-        onPopInvokedWithResult: (bool didPop, FormData? result) async {
-          MapEntry<String, String> question = await getRandomQuestion();
-          await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-          Get.offAll(Level1Screen(question: question));
-          return;
-        },
+        // onPopInvokedWithResult: (bool didPop, FormData? result) async {
+        //   MapEntry<String, String> question = await getRandomQuestion();
+        //   await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+        //   Get.offAll(Level1Screen(question: question));
+        //   return;
+        // },
         child: Container(
           width: width,
           height: height,
@@ -52,18 +58,25 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                         Image.asset("assets/images/logo.png",
                             width: width * 0.48,
                             height: width * 0.48),
-                        GestureDetector(
-                          onTap: () async {
-                            audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                            MapEntry<String, String> question = await getRandomQuestion();
-                            precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                            Get.offAll(Level1Screen(question: question));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Icon(Icons.close,
-                                color: Colors.white,
-                                size: width * 0.07),
+                        Visibility(
+                          visible: widget.showClose,
+                          child: GestureDetector(
+                            onTap: () async {
+                              if(widget.goBack){
+                                Get.back();
+                              } else{
+                                audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                MapEntry<String, String> question = await getRandomQuestion();
+                                precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                                Get.offAll(Level1Screen(question: question));
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Icon(Icons.close,
+                                  color: Colors.white,
+                                  size: width * 0.07),
+                            ),
                           ),
                         ),
                       ],
@@ -122,8 +135,22 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     Text('Billing starts after trial.', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.02777)),
                     const SizedBox(height: 16),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () async {
                         audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                        final offerings = await PurchaseApi.fetchOffers();
+
+                        if (offerings.isEmpty) {
+                          debugPrint('Error Fetching Prices');
+                        } else {
+                          final packages = offerings
+                              .map((offer) => offer.availablePackages)
+                              .expand((pair) => pair)
+                              .toList();
+                          await PurchaseApi.purchasePackage(packages[0]);
+                          await SubscriptionController().fetchCustomerInfo();
+                          if(subscriptionController.entitlement.value == Entitlement.premium)
+                          Get.offAll(const HomeScreen());
+                        }
                       },
                       child: Container(
                         width: width*0.8,

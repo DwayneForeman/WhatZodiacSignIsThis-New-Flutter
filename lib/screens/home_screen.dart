@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
-import 'package:whatsignisthis/screens/high_score_dialog.dart';
+import 'package:whatsignisthis/screens/upgrade_screen.dart';
 import 'package:whatsignisthis/utils/disable_sound.dart';
 import 'package:whatsignisthis/utils/start_level.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
-import '../utils/add_score.dart';
+import '../subscription/subscription_controller.dart';
 import '../utils/audio_services.dart';
 import '../utils/on_level1_start.dart';
 import '../utils/show_leaderboard.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final AudioService audioService = AudioService();
+  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +74,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const Spacer(),
                     GestureDetector(
-                        onTap: (){
+                        onTap: () async {
                           audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                          HighScoreDialog.showResponseDialog(context);
-                          //showLeaderboard();
-                          //submitScore(105);
+                          if(await GamesServices.isSignedIn) {
+                            showLeaderboard();
+                          } else {
+                            await GamesServices.signIn();
+                            showLeaderboard();
+                          }
                         },
                         child: Image.asset('assets/images/stats-icon.png', width: width*0.12, height: width*0.12)),
                     const SizedBox(width: 12),
@@ -108,8 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     GestureDetector(
                         onTap: () async {
                           audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                          await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                          startLevel(2);
+                          if(subscriptionController.entitlement.value == Entitlement.premium) {
+                            await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                            startLevel(2);
+                          } else {
+                            await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
+                            Get.to(const UpgradeScreen(goBack: true, showClose: true));
+                          }
                         },
                         child: Image.asset('assets/images/level2-home.png', width: width*0.43)),
                   ],
@@ -118,8 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 GestureDetector(
                     onTap: () async {
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                      await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                      startLevel(3);
+                      if(subscriptionController.entitlement.value == Entitlement.premium) {
+                        await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                        startLevel(3);
+                      } else {
+                        await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
+                        Get.to(const UpgradeScreen(showClose: true, goBack: true,));
+                      }
                     },
                     child: Image.asset('assets/images/level3-home.png', width: width*0.9)),
                 const Spacer(),
