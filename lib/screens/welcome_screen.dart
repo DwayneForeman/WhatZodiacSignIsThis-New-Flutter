@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:whatsignisthis/screens/upgrade_screen.dart';
 import 'package:whatsignisthis/utils/on_level1_start.dart';
 
 import '../subscription/subscription_controller.dart';
@@ -50,10 +49,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Future<void> initialize() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    GlobalVariables.to.showHighScoreDialog.value = prefs.getBool('showHighScoreDialog') ?? true;
     bool? soundOff = prefs.getBool('soundOff');
     GlobalVariables.to.disableSound.value = soundOff ?? false;
     audioService.playSound(audioPath: 'assets/sounds/laughing.mpeg');
-    playGamesSignin();
+    await playGamesSignin();
     isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
     if(isFirstLaunch){
       await prefs.setInt('points', 100);
@@ -108,17 +108,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               GestureDetector(
                 onTap: () async {
                   audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+
                   if(isFirstLaunch) {
                     await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
                     Get.offAll(const OnboardingScreen());
                   } else{
-                    await SubscriptionController().refreshCustomerInfo();
-                    debugPrint(subscriptionController.entitlement.value.toString());
-                    if(GlobalVariables.to.newInstallQuestionToShow.value != 0 || subscriptionController.entitlement.value == Entitlement.premium) {
+                    if(subscriptionController.entitlement.value == Entitlement.premium) {
                       onLevel1Start(context);
-                    } else {
-                      await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
-                      Get.offAll(const UpgradeScreen(showClose: false, goBack: true));
+                    } else{
+                      await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
+                      Get.offAll(const OnboardingScreen());
                     }
                   }
                 },

@@ -1,11 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:whatsignisthis/screens/carousel_items/carousel3.dart';
+import 'package:whatsignisthis/screens/upgrade_screen.dart';
 
+import '../subscription/subscription_controller.dart';
 import '../utils/audio_services.dart';
 import '../utils/on_level1_start.dart';
+import '../utils/variables.dart';
 import 'carousel_items/carousel1.dart';
 import 'carousel_items/carousel2.dart';
 
@@ -21,6 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int currentIndex = 0;
 
   final AudioService audioService = AudioService();
+  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +68,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onTap: () async {
                 audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                 if (carouselController.page == 2) {
-                  await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                  onLevel1Start(context);
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  await prefs.setBool('isFirstLaunch', false);
+                  if(GlobalVariables.to.newInstallQuestionToShow.value != 0 || subscriptionController.entitlement.value == Entitlement.premium) {
+                    await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+                    onLevel1Start(context);
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('isFirstLaunch', false);
+                  } else {
+                    await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
+                    Get.offAll(const UpgradeScreen(showClose: false, goBack: true));
+                  }
                 } else {
                   carouselController.nextPage(
                     duration: const Duration(milliseconds: 500),

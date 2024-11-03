@@ -57,6 +57,7 @@ Future<void> onOptionClick({required BuildContext context, required String selec
     if(GlobalVariables.to.points.value <= 0) {
       GlobalVariables.to.isGameOver.value = true;
       GlobalVariables.to.showHighScoreDialog.value = true;
+      await prefs.setBool('showHighScoreDialog', true);
     }
   }
 
@@ -125,6 +126,7 @@ Future<void> onOptionClick({required BuildContext context, required String selec
             if(GlobalVariables.to.showHighScoreDialog.value == true){
               HighScoreDialog.showResponseDialog(context);
               GlobalVariables.to.showHighScoreDialog.value = false;
+              await prefs.setBool('showHighScoreDialog', false);
             }
           }
         }
