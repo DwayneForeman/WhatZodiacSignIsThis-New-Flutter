@@ -10,6 +10,8 @@ import '../subscription/subscription_controller.dart';
 import '../utils/audio_services.dart';
 import '../utils/on_level1_start.dart';
 import '../utils/show_leaderboard.dart';
+import 'horoscope_screen.dart';
+import 'shop_webView.dart';
 import 'menu.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -108,7 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                          audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
                          onLevel1Start(context);
                         },
-                        child: Image.asset('assets/images/Level1-home.png', width: width*0.43)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Image.asset('assets/images/Level1-home.png', width: width*0.43),
+                        )),
                     const SizedBox(width: 10),
                     GestureDetector(
                         onTap: () async {
@@ -121,10 +126,25 @@ class _HomeScreenState extends State<HomeScreen> {
                             Get.to(const UpgradeScreen(goBack: true, showClose: true));
                           }
                         },
-                        child: Image.asset('assets/images/level2-home.png', width: width*0.43)),
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Image.asset('assets/images/level2-home.png', width: width*0.43),
+                            ),
+                            Visibility(
+                              visible: subscriptionController.entitlement.value == Entitlement.free,
+                              child: Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  top: 0,
+                                  child: Center(child: Image.asset('assets/images/lock-with-circle.png', width: 40))),
+                            ),
+                          ],
+                        )),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 4),
                 GestureDetector(
                     onTap: () async {
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
@@ -136,8 +156,57 @@ class _HomeScreenState extends State<HomeScreen> {
                         Get.to(const UpgradeScreen(showClose: true, goBack: true,));
                       }
                     },
-                    child: Image.asset('assets/images/level3-home.png', width: width*0.9)),
-                const Spacer(),
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Image.asset('assets/images/level3-home.png', width: width*0.9),
+                        ),
+                        Visibility(
+                          visible: subscriptionController.entitlement.value == Entitlement.free,
+                          child: Positioned(
+                              left: 0,
+                              right: 0,
+                              top: 0,
+                              child: Center(child: Image.asset('assets/images/lock-with-circle.png', width: 40))),
+                        ),
+                      ],
+                    )),
+                const Spacer(flex: 3),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/game-icon.png', width: 25),
+                        const Text('Game', style: TextStyle(fontFamily: 'SF-Compact', color: Color(0xff84FAB0), fontWeight: FontWeight.w900, fontSize: 14))
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () => Get.to(const HoroscopeScreen()),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/images/horoscope-icon.png', width: 26),
+                          const Text('Horoscope', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Get.to(() => const WebViewScreen(url: 'https:whatsignisthis.store'));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/images/shop-icon.png', width: 20),
+                          const Text('Shop', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
+                        ],
+                      ),
+                    )
+                  ],
+                )
               ],
             ),
           ),

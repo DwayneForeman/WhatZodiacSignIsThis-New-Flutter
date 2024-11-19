@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:whatsignisthis/screens/carousel_items/carousel3.dart';
+import 'package:whatsignisthis/screens/carousel_items/carousel4.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
 
 import '../subscription/subscription_controller.dart';
@@ -61,13 +62,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   CarouselItem1(),
                   CarouselItem2(),
                   CarouselItem3(),
+                  CarouselItem4(),
                 ],
               ),
             ),
             GestureDetector(
               onTap: () async {
                 audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                if (carouselController.page == 2) {
+                if (carouselController.page == 3) {
                   if(GlobalVariables.to.newInstallQuestionToShow.value != 0 || subscriptionController.entitlement.value == Entitlement.premium) {
                     await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
                     onLevel1Start(context);
@@ -90,7 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
                   gradient: const LinearGradient(
-                    colors: [Color(0xff84FAB0), Color(0xff005BEA)],
+                    colors: [Color(0xffAC32E4), Color(0xff7918F2),Color(0xff4801FF)],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
@@ -102,7 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         fontFamily: "SF-Compact",
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
-                        color: Colors.black),
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -110,9 +112,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const Spacer(flex: 2),
             SmoothPageIndicator(
               controller: carouselController,
-              count: 3,
+              count: 4,
               effect: const SwapEffect(
-                activeDotColor: Color(0xffffffff),
+                activeDotColor: Color(0xffA679FF),
                 dotColor: Color(0xff828282),
                 dotHeight: 8,
                 dotWidth: 8,

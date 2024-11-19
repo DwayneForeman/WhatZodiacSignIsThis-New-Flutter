@@ -8,6 +8,7 @@ import '../subscription/purchase_api.dart';
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_services.dart';
 import '../utils/get_random_question.dart';
+import '../utils/variables.dart';
 import 'home_screen.dart';
 
 class UpgradeScreen extends StatefulWidget {
@@ -31,6 +32,8 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
     confettiController =
         ConfettiController(duration: const Duration(seconds: 1));
   }
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +69,12 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(width: width*0.0),
-                            Image.asset("assets/images/logo.png",
-                                width: width * 0.48,
-                                height: width * 0.48),
+                            Padding(
+                              padding: EdgeInsets.only(left: widget.showClose == true ? 20 : 0),
+                              child: Image.asset("assets/images/logo.png",
+                                  width: width * 0.48,
+                                  height: width * 0.48),
+                            ),
                             Visibility(
                               visible: widget.showClose,
                               child: GestureDetector(
@@ -142,7 +148,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                         Image.asset('assets/images/go-premium.png', width: width*0.8),
                         const SizedBox(height: 28),
                         Text('First 3 Days For Free', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: width*0.0416)),
-                        Text('Then \$4.99 / week', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.03888)),
+                        Text('Then ${GlobalVariables.to.weeklyPrice.value}/ week', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.03888)),
                         Text('Billing starts after trial.', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.02777)),
                         const SizedBox(height: 16),
                         GestureDetector(
@@ -151,13 +157,24 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                             final offerings = await PurchaseApi.fetchOffers();
                             if (offerings.isEmpty) {
                               debugPrint('Error Fetching Prices');
+                              Get.snackbar(
+                                'Something went wrong',
+                                'Please try again later.',
+                                colorText: Colors.white,
+                              );
                             } else {
+                              setState(() {
+                                isLoading = true;
+                              });
                               final packages = offerings
                                   .map((offer) => offer.availablePackages)
                                   .expand((pair) => pair)
                                   .toList();
                               await PurchaseApi.purchasePackage(packages[0]);
                               await SubscriptionController().fetchCustomerInfo();
+                              setState(() {
+                                isLoading = false;
+                              });
                               if(subscriptionController.entitlement.value == Entitlement.premium) {
                                  confettiController.play();
                                  await Future.delayed(const Duration(seconds: 3));
@@ -177,8 +194,11 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('Start Free Trial  ', style: TextStyle(fontFamily: 'SF-Compact', fontWeight: FontWeight.w800, fontSize: width*0.05, color: Colors.black)),
-                                Image.asset('assets/images/home-emoji.png', width: width*0.0555, height: width*0.0555),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Image.asset('assets/images/gift-icon.png', width: width*0.095, height: width*0.095),
+                                ),
+                                Text(' Try 3 Days Free', style: TextStyle(fontFamily: 'SF-Compact', fontWeight: FontWeight.w800, fontSize: width*0.05, color: Colors.black)),
                               ],
                             ),
                           ),
@@ -201,8 +221,15 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                                   },
                                   child: Text('Terms', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.0333))),
                               GestureDetector(
-                                  onTap: (){
+                                  onTap: () async{
                                     audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    await subscriptionController.restorePurchases();
+                                    setState(() {
+                                      isLoading = false;
+                                    });
                                   },
                                   child: Text('Restore', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.0333))),
                             ],
@@ -213,6 +240,15 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     ),
                   ),
                 ),
+              ),
+            ),
+            Visibility(
+              visible: isLoading,
+              child: Container(
+                width: width,
+                height: height,
+                color: Colors.black.withOpacity(0.5),
+                child: const Center(child: CircularProgressIndicator(color: Colors.white)),
               ),
             ),
             Align(

@@ -12,11 +12,18 @@ class CarouselItem3 extends StatelessWidget {
         Image.asset("assets/images/carousel3-chart.png",
             width: width * 0.52),
         const Spacer(),
-        Text("Climb the Charts",
-            style: TextStyle(
-                fontFamily: "Cherry",
-                color: const Color(0xffffffff),
-                fontSize: width * 0.075)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/trophy-emoji.png', width: 24, height: 24),
+            const SizedBox(width: 10),
+            Text("Climb the Charts",
+                style: TextStyle(
+                    fontFamily: "Cherry",
+                    color: const Color(0xffffffff),
+                    fontSize: width * 0.075)),
+          ],
+        ),
         const SizedBox(height: 5),
         Container(
           width: width * 0.72,
@@ -24,7 +31,7 @@ class CarouselItem3 extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               gradient: const LinearGradient(
-                  colors: [Color(0xff12A5FF), Color(0xff12FFF7)])),
+                  colors: [Color(0xffB721FF), Color(0xff21D4FD)])),
         ),
         const SizedBox(height: 20),
         Text("Feeling competitive?",
@@ -34,14 +41,17 @@ class CarouselItem3 extends StatelessWidget {
                 color: const Color(0xffffffff),
                 fontSize: width * 0.0442)),
         const SizedBox(height: 30),
-        Text(
-            textAlign: TextAlign.center,
-            "Compete with others to reach the top 10\non the global leaderboard.",
-            style: TextStyle(
-                fontFamily: "SF-Compact",
-                fontWeight: FontWeight.w900,
-                color: const Color(0xffffffff),
-                fontSize: width * 0.0442)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+              textAlign: TextAlign.center,
+              "Compete with others to reach Zodiac King & Queen status on the global leaderboard.",
+              style: TextStyle(
+                  fontFamily: "SF-Compact",
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xffffffff),
+                  fontSize: width * 0.04)),
+        ),
         const Spacer(flex: 2),
       ],
     );

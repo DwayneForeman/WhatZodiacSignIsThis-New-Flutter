@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:whatsignisthis/utils/add_score.dart';
 import 'package:whatsignisthis/utils/on_level1_start.dart';
 
+import '../subscription/purchase_api.dart';
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_services.dart';
 import '../utils/open_url.dart';
@@ -29,21 +31,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void initState() {
     super.initState();
     initialize();
+    fetchPrices();
   }
 
-  // Future<void> fetchPrices() async {
-  //   final offerings = await PurchaseApi.fetchOffers();
-  //
-  //   if (offerings.isEmpty) {
-  //     debugPrint('Error Fetching Prices');
-  //   } else {
-  //     final packages = offerings
-  //         .map((offer) => offer.availablePackages)
-  //         .expand((pair) => pair)
-  //         .toList();
-  //    //print(packages[0].storeProduct);
-  //   }
-  // }
+  Future<void> fetchPrices() async {
+    final offerings = await PurchaseApi.fetchOffers();
+
+    if (offerings.isEmpty) {
+      debugPrint('Error Fetching Prices');
+    } else {
+      final packages = offerings
+          .map((offer) => offer.availablePackages)
+          .expand((pair) => pair)
+          .toList();
+      GlobalVariables.to.weeklyPrice.value = packages[0].storeProduct.priceString;
+      debugPrint(GlobalVariables.to.weeklyPrice.value);
+    }
+  }
 
 
 
@@ -64,6 +68,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     } else {
       GlobalVariables.to.newInstallQuestionToShow.value = prefs.getInt('newInstallQuestionToShow') ?? 0;
       GlobalVariables.to.points.value = prefs.getInt('points') ?? 100;
+      int? score = await GamesServices.getPlayerScore(androidLeaderboardID: 'CgkImMyHs-MNEAIQAQ');
+      if(GlobalVariables.to.points.value > score!){
+        submitScore(GlobalVariables.to.points.value);
+      } else if(GlobalVariables.to.points.value < score){
+        GlobalVariables.to.points.value = score;
+        await prefs.setInt('points', score);
+      }
     }
 
     //High Score

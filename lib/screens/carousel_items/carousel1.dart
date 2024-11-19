@@ -10,7 +10,7 @@ class CarouselItem1 extends StatelessWidget {
       children: [
         const Spacer(flex: 3),
         Container(
-          width: width * 0.85,
+          width: width * 0.8,
           height: width * 0.7,
           decoration: const BoxDecoration(
               image: DecorationImage(
@@ -23,7 +23,7 @@ class CarouselItem1 extends StatelessWidget {
                   width: width*0.64,
                   child: Text(
                       textAlign: TextAlign.center,
-                      "At this big age, running an errand is now considered “going out” and you can’t tell me any different. Argue with ya mamma!",
+                      "Running an errand is now considered “going out” and you can’t tell me any different. Argue with ya mamma!",
                       style: TextStyle(
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.w800,
@@ -33,11 +33,18 @@ class CarouselItem1 extends StatelessWidget {
               ))
         ),
         const Spacer(),
-        Text("1200+ Text Memes",
-            style: TextStyle(
-                fontFamily: "Cherry",
-                color: const Color(0xffffffff),
-                fontSize: width * 0.075)),
+        Row(
+         mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/rolling-on-the-floor-laughing.png', width: 25, height: 25),
+            const SizedBox(width: 10),
+            Text("1200+ Text Memes",
+                style: TextStyle(
+                    fontFamily: "Cherry",
+                    color: const Color(0xffffffff),
+                    fontSize: width * 0.075)),
+          ],
+        ),
         const SizedBox(height: 5),
         Container(
           width: width * 0.72,
@@ -45,7 +52,7 @@ class CarouselItem1 extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               gradient: const LinearGradient(
-                  colors: [Color(0xff12A5FF), Color(0xff12FFF7)])),
+                  colors: [Color(0xffB721FF), Color(0xff21D4FD)])),
         ),
         SizedBox(height: width * 0.053),
         Text("Laugh Your Ahhh Off",
