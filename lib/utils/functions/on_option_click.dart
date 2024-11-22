@@ -6,16 +6,16 @@ import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
-import 'package:whatsignisthis/utils/add_score.dart';
-import 'package:whatsignisthis/utils/points.dart';
+import 'package:whatsignisthis/utils/play_games/add_score_to_leaderboard.dart';
+import 'package:whatsignisthis/utils/functions/points_service.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
-import '../screens/correct_answer_dialog.dart';
-import '../screens/game_over_dialog.dart';
-import '../screens/high_score_dialog.dart';
-import '../screens/incorrect_answer_dialog.dart';
-import '../subscription/subscription_controller.dart';
-import 'audio_services.dart';
+import '../../screens/dialogs/correct_answer_dialog.dart';
+import '../../screens/dialogs/game_over_dialog.dart';
+import '../../screens/dialogs/high_score_dialog.dart';
+import '../../screens/dialogs/incorrect_answer_dialog.dart';
+import '../../subscription/subscription_controller.dart';
+import '../audio_service/audio_services.dart';
 import 'get_incorrect_answer_description.dart';
 
 Future<void> onOptionClick({required BuildContext context, required String selectedAnswer, required String correctAnswer, required ConfettiController confettiController, required String randomCorrectSound, required String randomIncorrectSound, required String imgPath, required String incorrectAnsLabel, required int level, required AudioService audioService}) async {

@@ -3,9 +3,9 @@ import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:whatsignisthis/widgets/gradient_button.dart';
 
-import '../utils/audio_services.dart';
-import '../utils/open_url.dart';
-import '../utils/show_leaderboard.dart';
+import '../../utils/audio_service/audio_services.dart';
+import '../../utils/functions/open_url.dart';
+import '../../utils/play_games/show_leaderboard.dart';
 
 class HighScoreDialog {
   static bool isDialogShown = false;

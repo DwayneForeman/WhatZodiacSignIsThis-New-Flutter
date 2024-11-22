@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
-import '../screens/level1.dart';
-import '../screens/level2.dart';
-import '../screens/level3.dart';
+import '../../screens/game_levels/level1.dart';
+import '../../screens/game_levels/level2.dart';
+import '../../screens/game_levels/level3.dart';
 import 'get_random_question.dart';
 
 Future<void> startLevel(int level) async {

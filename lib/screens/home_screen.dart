@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
-import 'package:whatsignisthis/utils/disable_sound.dart';
-import 'package:whatsignisthis/utils/start_level.dart';
+import 'package:whatsignisthis/utils/audio_service/disable_sound.dart';
+import 'package:whatsignisthis/utils/functions/start_level.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
 import '../subscription/subscription_controller.dart';
-import '../utils/audio_services.dart';
-import '../utils/on_level1_start.dart';
-import '../utils/show_leaderboard.dart';
+import '../utils/audio_service/audio_services.dart';
+import '../utils/functions/on_level1_start.dart';
+import '../utils/play_games/show_leaderboard.dart';
 import 'horoscope_screen.dart';
-import 'shop_webView.dart';
+import 'shop_web_view.dart';
 import 'menu.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -173,39 +173,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     )),
                 const Spacer(flex: 3),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/images/game-icon.png', width: 25),
-                        const Text('Game', style: TextStyle(fontFamily: 'SF-Compact', color: Color(0xff84FAB0), fontWeight: FontWeight.w900, fontSize: 14))
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () => Get.to(const HoroscopeScreen()),
-                      child: Column(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset('assets/images/horoscope-icon.png', width: 26),
-                          const Text('Horoscope', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
+                          Image.asset('assets/images/game-icon.png', width: 25),
+                          const Text('Game', style: TextStyle(fontFamily: 'SF-Compact', color: Color(0xff84FAB0), fontWeight: FontWeight.w900, fontSize: 14))
                         ],
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: (){
-                        Get.to(() => const WebViewScreen(url: 'https:whatsignisthis.store'));
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset('assets/images/shop-icon.png', width: 20),
-                          const Text('Shop', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
-                        ],
+                      GestureDetector(
+                        onTap: () => Get.to(const HoroscopeScreen()),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/horoscope-icon.png', width: 26),
+                            const Text('Horoscope', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
+                          ],
+                        ),
                       ),
-                    )
-                  ],
+                      GestureDetector(
+                        onTap: (){
+                          Get.to(() => const WebViewScreen(url: 'https:whatsignisthis.store'));
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/shop-icon.png', width: 20),
+                            const Text('Shop', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),

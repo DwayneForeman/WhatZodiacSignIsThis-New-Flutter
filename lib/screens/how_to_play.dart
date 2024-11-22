@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../utils/audio_services.dart';
+import '../utils/audio_service/audio_services.dart';
 
 class HowToPlay extends StatefulWidget {
   const HowToPlay({super.key});

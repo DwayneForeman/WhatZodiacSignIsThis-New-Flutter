@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
-import '../screens/level1.dart';
+import '../../screens/game_levels/level1.dart';
 import 'get_new_install_jokes.dart';
 import 'get_random_question.dart';
 

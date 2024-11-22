@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:get/get.dart';
 import 'package:whatsignisthis/screens/how_to_play.dart';
-import 'package:whatsignisthis/utils/open_url.dart';
+import 'package:whatsignisthis/utils/functions/open_url.dart';
 
-import '../utils/audio_services.dart';
+import '../utils/audio_service/audio_services.dart';
 
 void openMenuBottomSheet(BuildContext context) {
   showModalBottomSheet(

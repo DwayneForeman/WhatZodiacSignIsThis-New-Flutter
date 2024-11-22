@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:whatsignisthis/screens/home_screen.dart';
-import 'package:whatsignisthis/screens/level1.dart';
+import 'package:whatsignisthis/screens/game_levels/level1.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 import 'package:whatsignisthis/widgets/gradient_button.dart';
 
-import '../utils/audio_services.dart';
-import '../utils/get_random_question.dart';
-import '../utils/open_url.dart';
-import 'level2.dart';
-import 'level3.dart';
+import '../../utils/audio_service/audio_services.dart';
+import '../../utils/functions/get_random_question.dart';
+import '../../utils/functions/open_url.dart';
+import '../game_levels/level2.dart';
+import '../game_levels/level3.dart';
 
 class GameOverDialog {
   static bool isDialogShown = false;

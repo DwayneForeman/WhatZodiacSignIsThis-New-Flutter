@@ -1,13 +1,13 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/audio_services.dart';
-import '../utils/get_image.dart';
-import '../utils/get_random_question.dart';
-import '../utils/on_option_click.dart';
-import '../utils/points.dart';
-import '../utils/variables.dart';
-import '../widgets/game_header.dart';
+import '../../utils/audio_service/audio_services.dart';
+import '../../utils/functions/get_image_according_to_sign.dart';
+import '../../utils/functions/get_random_question.dart';
+import '../../utils/functions/on_option_click.dart';
+import '../../utils/functions/points_service.dart';
+import '../../utils/variables.dart';
+import '../../widgets/game_level_screen_header.dart';
 
 class Level3Screen extends StatefulWidget {
   const Level3Screen({super.key, required this.question});

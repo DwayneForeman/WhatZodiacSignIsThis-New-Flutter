@@ -1,13 +1,13 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whatsignisthis/screens/level1.dart';
-import 'package:whatsignisthis/utils/open_url.dart';
+import 'package:whatsignisthis/screens/game_levels/level1.dart';
+import 'package:whatsignisthis/utils/functions/open_url.dart';
 
 import '../subscription/purchase_api.dart';
 import '../subscription/subscription_controller.dart';
-import '../utils/audio_services.dart';
-import '../utils/get_random_question.dart';
+import '../utils/audio_service/audio_services.dart';
+import '../utils/functions/get_random_question.dart';
 import '../utils/variables.dart';
 import 'home_screen.dart';
 
@@ -83,9 +83,8 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                                     Get.back();
                                   } else{
                                     audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                                    MapEntry<String, String> question = await getRandomQuestion();
                                     await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-                                    Get.offAll(Level1Screen(question: question));
+                                    Get.offAll(const HomeScreen());
                                   }
                                 },
                                 child: Padding(

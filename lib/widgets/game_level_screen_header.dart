@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:whatsignisthis/screens/home_screen.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
-import '../utils/audio_services.dart';
+import '../utils/audio_service/audio_services.dart';
 
 class GameHeader extends StatelessWidget {
-  GameHeader({super.key, required this.question, required this.onBalloonTap, required this.audioService});
+  const GameHeader({super.key, required this.question, required this.onBalloonTap, required this.audioService});
   final String question;
   final VoidCallback onBalloonTap;
   final AudioService audioService;
