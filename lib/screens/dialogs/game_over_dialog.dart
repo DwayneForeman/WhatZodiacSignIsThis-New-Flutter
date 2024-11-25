@@ -7,7 +7,7 @@ import 'package:whatsignisthis/utils/variables.dart';
 import 'package:whatsignisthis/widgets/gradient_button.dart';
 
 import '../../utils/audio_service/audio_services.dart';
-import '../../utils/functions/get_random_question.dart';
+import '../../utils/game_play_functions/get_random_question.dart';
 import '../../utils/functions/open_url.dart';
 import '../game_levels/level2.dart';
 import '../game_levels/level3.dart';

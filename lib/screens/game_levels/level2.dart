@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:whatsignisthis/widgets/game_level_screen_header.dart';
 
 import '../../utils/audio_service/audio_services.dart';
-import '../../utils/functions/get_image_according_to_sign.dart';
-import '../../utils/functions/get_random_question.dart';
-import '../../utils/functions/on_option_click.dart';
-import '../../utils/functions/points_service.dart';
+import '../../utils/game_play_functions/get_image_according_to_sign.dart';
+import '../../utils/game_play_functions/get_random_question.dart';
+import '../../utils/game_play_functions/on_option_click.dart';
+import '../../utils/game_play_functions/points_service.dart';
 import '../../utils/variables.dart';
 
 class Level2Screen extends StatefulWidget {

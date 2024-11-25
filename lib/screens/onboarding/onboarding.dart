@@ -7,7 +7,7 @@ import 'package:whatsignisthis/screens/upgrade_screen.dart';
 
 import '../../subscription/subscription_controller.dart';
 import '../../utils/audio_service/audio_services.dart';
-import '../../utils/functions/on_level1_start.dart';
+import '../../utils/game_play_functions/on_level1_start.dart';
 import '../../utils/variables.dart';
 import 'carousel_items/carousel1.dart';
 import 'carousel_items/carousel2.dart';

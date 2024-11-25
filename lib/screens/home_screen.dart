@@ -3,13 +3,13 @@ import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
 import 'package:whatsignisthis/utils/audio_service/disable_sound.dart';
-import 'package:whatsignisthis/utils/functions/start_level.dart';
+import 'package:whatsignisthis/utils/game_play_functions/start_level.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
-import '../utils/functions/on_level1_start.dart';
-import '../utils/play_games/show_leaderboard.dart';
+import '../utils/game_play_functions/on_level1_start.dart';
+import '../utils/leader_board/show_leaderboard.dart';
 import 'horoscope_screen.dart';
 import 'shop_web_view.dart';
 import 'menu.dart';

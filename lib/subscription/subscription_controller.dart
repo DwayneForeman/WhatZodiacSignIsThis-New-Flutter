@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:whatsignisthis/screens/home_screen.dart';
 
-enum Entitlement { free, premium }
+enum Entitlement {free, premium}
 
 class SubscriptionController extends GetxController {
   var entitlement = Entitlement.free.obs;
@@ -19,7 +20,7 @@ class SubscriptionController extends GetxController {
         updateEntitlementStatus(customerInfo);
       });
     } catch (e) {
-      print("Error fetching customer info: $e");
+      debugPrint("Error fetching customer info: $e");
     }
   }
 
@@ -30,7 +31,7 @@ class SubscriptionController extends GetxController {
       CustomerInfo customerInfo = await Purchases.getCustomerInfo();
       updateEntitlementStatus(customerInfo);
     } catch (e) {
-      print("Error refreshing customer info: $e");
+      debugPrint("Error refreshing customer info: $e");
     }
   }
 
@@ -50,6 +51,7 @@ class SubscriptionController extends GetxController {
           'Subscriptions restored successfully.',
           colorText: Colors.white,
         );
+        Get.offAll(const HomeScreen());
       }
     } catch (e) {
       Get.snackbar(

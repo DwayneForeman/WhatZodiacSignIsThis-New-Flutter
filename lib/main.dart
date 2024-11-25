@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:whatsignisthis/screens/welcome_screen.dart';
 import 'package:whatsignisthis/subscription/purchase_api.dart';
 import 'package:whatsignisthis/subscription/subscription_controller.dart';
+import 'package:whatsignisthis/utils/functions/get_next_8AM.dart';
+import 'package:whatsignisthis/utils/functions/get_next_8PM.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -20,28 +22,32 @@ void main() async {
   ]);
   Get.put(GlobalVariables());
 
-  Workmanager().initialize(
-    // The top level function, aka callbackDispatcher
-      callbackDispatcher,
-      // If enabled it will post a notification whenever
-      // the task is running. Handy for debugging tasks
-      isInDebugMode: false
+  //int initialDelay = getDifferenceToNext8PMInSeconds();
+  // Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+  //
+  // Workmanager().registerPeriodicTask(
+  //   initialDelay: Duration(seconds: initialDelay), "2", "EveningNotification", frequency: const Duration(days: 1),
+  // );
+
+  int eveningDelay = getDifferenceToNext8PMInSeconds();
+  int morningDelay = getDifferenceToNext8AMInSeconds();
+
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+
+  // Morning notification task
+  Workmanager().registerPeriodicTask(
+    "1",
+    "MorningNotification",
+    initialDelay: Duration(seconds: morningDelay),
+    frequency: const Duration(days: 1),
   );
 
-  // Periodic task registration
+  // Evening notification task
   Workmanager().registerPeriodicTask(
-    initialDelay: const Duration(minutes: 2),
     "2",
-    //This is the value that will be
-    // returned in the callbackDispatcher
-    "simplePeriodicTask",
-    // When no frequency is provided
-    // the default 15 minutes is set.
-    // Minimum frequency is 15 min.
-    // Android will automatically change
-    // your frequency to 15 min
-    // if you have configured a lower frequency.
-    frequency: const Duration(minutes: 15),
+    "EveningNotification",
+    initialDelay: Duration(seconds: eveningDelay),
+    frequency: const Duration(days: 1),
   );
 
   runApp(const MyApp());

@@ -1,13 +1,12 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whatsignisthis/screens/game_levels/level1.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:whatsignisthis/utils/functions/open_url.dart';
 
 import '../subscription/purchase_api.dart';
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
-import '../utils/functions/get_random_question.dart';
 import '../utils/variables.dart';
 import 'home_screen.dart';
 
@@ -170,6 +169,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                                   .expand((pair) => pair)
                                   .toList();
                               await PurchaseApi.purchasePackage(packages[0]);
+                              await Purchases.syncPurchases();
                               await SubscriptionController().fetchCustomerInfo();
                               setState(() {
                                 isLoading = false;

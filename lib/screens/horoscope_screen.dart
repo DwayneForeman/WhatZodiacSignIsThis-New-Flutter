@@ -1,14 +1,14 @@
-import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
 
 import '../horoscope/horoscope_controller.dart';
 import '../horoscope/model.dart';
 import '../subscription/subscription_controller.dart';
+import '../utils/functions/get_time_zone.dart';
 import '../utils/variables.dart';
 
 class HoroscopeScreen extends StatefulWidget {
@@ -21,165 +21,45 @@ class HoroscopeScreen extends StatefulWidget {
 class _HoroscopeScreenState extends State<HoroscopeScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
+  PageController pageController = PageController();
+  final SubscriptionController subscriptionController =
+      Get.put(SubscriptionController());
+  late String timezone;
+  bool changeSign = false;
+  String selectedSign = GlobalVariables.to.horoscopeSelectedSign;
 
   @override
   void initState() {
     super.initState();
+    timezone = getCurrentTimeZone();
+    debugPrint('Time Zone: $timezone');
     tabController = TabController(length: 12, vsync: this);
+    tabController.index = zodiacLabels.indexOf(selectedSign.toUpperCase());
 
     // Listener to update selectedSign when the tab changes
-    tabController.addListener(() {
-      if (tabController.indexIsChanging) {
-        setState(() {
-          selectedSign = zodiacLabels[tabController.index];
-          print(selectedSign);
-        });
-      }
-    });
+    // tabController.addListener(() async {
+    //   if (tabController.indexIsChanging) {
+    //     setState(() {
+    //       GlobalVariables.to.horoscopeSelectedSign = zodiacLabels[tabController.index];
+    //       debugPrint(GlobalVariables.to.horoscopeSelectedSign);
+    //     });
+    //   }
+    // });
   }
+
 
   String horoscopeDay = 'today';
   RxString horoscopeType = 'Relationship'.obs;
-  String selectedSign = "Aries";
   String selectedDay = DateTime.now().day.toString();
   final HoroscopeController horoscopeController = HoroscopeController();
 
   Future<HoroscopeData> fetchHoroscopeData() async {
     return await horoscopeController.fetchHoroscopeData(
-      sign: selectedSign,
-      day: selectedDay,
-      apiKey: GlobalVariables.to.apiKey,
-      accessToken: GlobalVariables.to.accessToken,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      backgroundColor: const Color(0xff000000),
-      body: SizedBox(
-        width: width,
-        height: height,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Image.asset('assets/images/horoscope-top-img.png',
-                      width: width),
-                  Positioned(
-                    right: 20,
-                    top: 20,
-                    child: GestureDetector(
-                      onTap: () => Get.back(),
-                      child: const Icon(Icons.close,
-                          color: Colors.white, size: 20),
-                    ),
-                  ),
-                ],
-              ),
-              TabBar(
-                dividerHeight: 0,
-                tabAlignment: TabAlignment.start,
-                controller: tabController,
-                indicatorSize: TabBarIndicatorSize.label,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-                isScrollable: true,
-                indicator: const BoxDecoration(),
-                tabs: List.generate(
-                  12,
-                  (index) => Tab(
-                    height: 70,
-                    child: SizedBox(
-                      height: 70,
-                      width: 100,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // Background color for the selected label
-                          if (tabController.index == index)
-                            Positioned(
-                              bottom: 0,
-                              child: Container(
-                                height: 47,
-                                width: index == 3 || index == 8 ? 100 : 90,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff5848FE),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    zodiacLabels[index],
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: 'SF-Compact',
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          // Zodiac name label
-                          Positioned(
-                            bottom: 8,
-                            child: Text(
-                              zodiacLabels[index],
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'SF-Compact',
-                                fontWeight: FontWeight.w900,
-                                color: tabController.index == index
-                                    ? Colors.white
-                                    : const Color(0xff8d8d8e),
-                              ),
-                            ),
-                          ),
-                          // Half-visible image
-                          if (tabController.index == index)
-                            Positioned(
-                              top: 0,
-                              child: Image.asset(
-                                imgPaths[index],
-                                height: 40,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: tabController, children: [
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                  tabView(),
-                ]),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+        sign: selectedSign,
+        day: selectedDay,
+        apiKey: GlobalVariables.to.horoscopeApiKey,
+        accessToken: GlobalVariables.to.horoscopeAccessToken,
+        tzone: timezone);
   }
 
   List<String> zodiacLabels = [
@@ -212,15 +92,213 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     'assets/images/virgo.png',
   ];
 
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      backgroundColor: const Color(0xff000000),
+      body: SizedBox(
+        width: width,
+        height: height,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Image.asset('assets/images/horoscope-top-img.png',
+                      width: width),
+                  Positioned(
+                    right: 20,
+                    top: 20,
+                    child: GestureDetector(
+                      onTap: () => Get.back(),
+                      child: const Icon(Icons.close,
+                          color: Colors.white, size: 25),
+                    ),
+                  ),
+                ],
+              ),
+              TabBar(
+                onTap: (index){
+                  if(changeSign == true)
+                  {
+                    pageController.jumpToPage(index);
+                    tabController.index = index;
+                    setState(() {
+                      selectedSign =
+                      zodiacLabels[index];
+                    });
+                  }
+                },
+                physics: changeSign == false ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
+                dividerHeight: 0,
+                tabAlignment: TabAlignment.start,
+                controller: tabController,
+                indicatorSize: TabBarIndicatorSize.label,
+                labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                isScrollable: true,
+                indicator: const BoxDecoration(),
+                tabs: List.generate(
+                  12,
+                  (index) => Tab(
+                    height: changeSign == false ? 70 : 100,
+                    child: SizedBox(
+                      height: changeSign == false ? 70 : 100,
+                      width: 100,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Background color for the selected label
+                          Visibility(
+                            visible: tabController.index == index,
+                            child: Positioned(
+                              bottom: changeSign == false ? 0 : 30,
+                              child: Container(
+                                height: 47,
+                                width: index == 3 || index == 8 ? 100 : 90,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff5848FE),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    zodiacLabels[index],
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'SF-Compact',
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Zodiac name label
+                          Positioned(
+                            bottom: changeSign == false ? 8 : 38,
+                            child: Text(
+                              zodiacLabels[index],
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'SF-Compact',
+                                fontWeight: FontWeight.w900,
+                                color: tabController.index == index
+                                    ? Colors.white
+                                    : const Color(0xff8d8d8e),
+                              ),
+                            ),
+                          ),
+                          // Half-visible image
+                          Visibility(
+                            visible: tabController.index == index,
+                            child: Positioned(
+                              top: 0,
+                              child: Image.asset(
+                                imgPaths[index],
+                                height: 40,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          // Edit Icon
+                          Visibility(
+                            visible: tabController.index == index &&
+                                changeSign == false,
+                            child: Positioned(
+                                right: 0,
+                                top: 12,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        changeSign = true;
+                                      });
+                                    },
+                                    child: const Icon(Icons.edit,
+                                        color: Colors.white, size: 18))),
+                          ),
+                          // Save text
+                          Visibility(
+                            visible: tabController.index == index &&
+                                changeSign == true,
+                            child: Positioned(
+                                right: 0,
+                                left: 0,
+                                bottom: 0,
+                                child: GestureDetector(
+                                    onTap: () async {
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      prefs.setString('horoscope_selected_sign', selectedSign);
+                                      setState(() {
+                                        changeSign = false;
+                                        GlobalVariables.to.horoscopeSelectedSign = selectedSign;
+                                      });
+                                    },
+                                    child: const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text('save',
+                                            style: TextStyle(
+                                                fontFamily: 'SF-Compact',
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w900,
+                                                color: Color(0xff84FAB0))),
+                                        Icon(Icons.check_circle_rounded,
+                                            color: Color(0xff84FAB0), size: 16),
+                                      ],
+                                    ))),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: PageView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: pageController,
+                    children: [
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                      tabView(),
+                    ]),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget tabView() {
     return SingleChildScrollView(
       child: Column(
         children: [
           const SizedBox(height: 24),
-          Text(formatDate(horoscopeDay == 'yesterday' ? DateTime.now().subtract(const Duration(days: 1)) : horoscopeDay == 'tomorrow' ? DateTime.now().add(const Duration(days: 1)): DateTime.now()),
+          Text(
+              formatDate(horoscopeDay == 'yesterday'
+                  ? DateTime.now().subtract(const Duration(days: 1))
+                  : horoscopeDay == 'tomorrow'
+                      ? DateTime.now().add(const Duration(days: 1))
+                      : DateTime.now()),
               style: const TextStyle(
                   fontFamily: 'SF-Compact',
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: Color(0xffC4D0FB))),
           const SizedBox(height: 20),
@@ -230,15 +308,18 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                 if(horoscopeDay != 'yesterday'){
-                   setState(() {
-                     horoscopeDay = 'yesterday';
-                     selectedDay = DateTime.now().subtract(const Duration(days: 1)).day.toString();
-                     if (kDebugMode) {
-                       print(selectedDay);
-                     }
-                   });
-                 }
+                  if (horoscopeDay != 'yesterday') {
+                    setState(() {
+                      horoscopeDay = 'yesterday';
+                      selectedDay = DateTime.now()
+                          .subtract(const Duration(days: 1))
+                          .day
+                          .toString();
+                      if (kDebugMode) {
+                        print(selectedDay);
+                      }
+                    });
+                  }
                 },
                 child: Container(
                   height: 47,
@@ -250,6 +331,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                   child: Center(
                       child: Text('Yesterday',
                           style: TextStyle(
+                              fontSize: 16,
                               fontFamily: 'SF-Compact',
                               fontWeight: FontWeight.w900,
                               color: horoscopeDay == 'yesterday'
@@ -260,11 +342,11 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if(horoscopeDay != 'today'){
+                  if (horoscopeDay != 'today') {
                     setState(() {
                       horoscopeDay = 'today';
                       selectedDay = DateTime.now().day.toString();
-                      print(selectedDay);
+                      debugPrint(selectedDay);
                     });
                   }
                 },
@@ -278,6 +360,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                   child: Center(
                       child: Text('Today',
                           style: TextStyle(
+                              fontSize: 16,
                               fontFamily: 'SF-Compact',
                               fontWeight: FontWeight.w900,
                               color: horoscopeDay == 'today'
@@ -288,10 +371,13 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if(horoscopeDay != 'tomorrow'){
+                  if (horoscopeDay != 'tomorrow') {
                     setState(() {
                       horoscopeDay = 'tomorrow';
-                      selectedDay = DateTime.now().add(const Duration(days: 1)).day.toString();
+                      selectedDay = DateTime.now()
+                          .add(const Duration(days: 1))
+                          .day
+                          .toString();
                     });
                   }
                 },
@@ -305,6 +391,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                   child: Center(
                       child: Text('Tomorrow',
                           style: TextStyle(
+                              fontSize: 16,
                               fontFamily: 'SF-Compact',
                               fontWeight: FontWeight.w900,
                               color: horoscopeDay == 'tomorrow'
@@ -324,9 +411,9 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                 onTap: () {
                   horoscopeType.value = 'Relationship';
                 },
-                child: Obx((){
+                child: Obx(() {
                   return Container(
-                      height: 30,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: horoscopeType.value == 'Relationship'
@@ -335,19 +422,19 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                       child: Center(
                           child: Image.asset(
                               'assets/images/relationship-emoji.png',
-                              width: 16,
-                              height: 16)));
+                              width: 18,
+                              height: 18)));
                 }),
               )),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
                   horoscopeType.value = 'Health';
                 },
-                child: Obx((){
+                child: Obx(() {
                   return Container(
-                      height: 30,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: horoscopeType.value == 'Health'
@@ -355,37 +442,39 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                               : Colors.white.withOpacity(0.1)),
                       child: Center(
                           child: Image.asset('assets/images/health-emoji.png',
-                              width: 16, height: 16)));
+                              width: 18, height: 18)));
                 }),
               )),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
                   horoscopeType.value = 'Profession';
                 },
-                child: Obx((){
+                child: Obx(() {
                   return Container(
-                      height: 30,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: horoscopeType.value == 'Profession'
                               ? const Color(0xff7579FF)
                               : Colors.white.withOpacity(0.1)),
                       child: Center(
-                          child: Image.asset('assets/images/profession-emoji.png',
-                              width: 16, height: 16)));
+                          child: Image.asset(
+                              'assets/images/profession-emoji.png',
+                              width: 18,
+                              height: 18)));
                 }),
               )),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
                   horoscopeType.value = 'Emotions';
                 },
-                child: Obx((){
+                child: Obx(() {
                   return Container(
-                      height: 30,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: horoscopeType.value == 'Emotions'
@@ -393,18 +482,18 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                               : Colors.white.withOpacity(0.1)),
                       child: Center(
                           child: Image.asset('assets/images/emotion-emoji.png',
-                              width: 16, height: 16)));
+                              width: 18, height: 18)));
                 }),
               )),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
                   horoscopeType.value = 'Travel';
                 },
-                child: Obx((){
+                child: Obx(() {
                   return Container(
-                      height: 30,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: horoscopeType.value == 'Travel'
@@ -412,18 +501,18 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                               : Colors.white.withOpacity(0.1)),
                       child: Center(
                           child: Image.asset('assets/images/travel-emoji.png',
-                              width: 16, height: 16)));
+                              width: 18, height: 18)));
                 }),
               )),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
                   horoscopeType.value = 'Luck';
                 },
-                child: Obx((){
+                child: Obx(() {
                   return Container(
-                      height: 30,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           color: horoscopeType.value == 'Luck'
@@ -431,83 +520,132 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                               : Colors.white.withOpacity(0.1)),
                       child: Center(
                           child: Image.asset('assets/images/luck-emoji.png',
-                              width: 16, height: 16)));
+                              width: 18, height: 18)));
                 }),
               )),
               const SizedBox(width: 16),
             ],
           ),
-          subscriptionController.entitlement.value == Entitlement.free ? 
-           GestureDetector(
-             onTap: () async{
-               await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
-               Get.to(const UpgradeScreen(showClose: true, goBack: true));
-             },
-             child: Padding(
-               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-               child: Image.asset('assets/images/locked-horoscope.png'),
-             ),
-           )   :
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            padding: const EdgeInsets.all(24),
-            constraints: const BoxConstraints(
-              minHeight: 250
-            ),
-            decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(16)),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Obx((){
-                      return  Image.asset(getPredictionImg(horoscopeType.value),
-                          width: 25, height: 25);
-                    }),
-                    const SizedBox(width: 20),
-                    Obx((){
-                      return Text(horoscopeType.value,
-                          style: const TextStyle(
-                              fontFamily: 'Cherry',
-                              fontSize: 24,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xffC4D0FB)));
-                    })
-                  ],
-                ),
-                const SizedBox(height: 12),
-                FutureBuilder<HoroscopeData>(
-                  future: fetchHoroscopeData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Center(child: CircularProgressIndicator(color: Colors.white)),
-                      );
-                    } else if (snapshot.hasError) {
-                      return const Center(child: Text('Something went wrong! Please try again later', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700, fontFamily: 'SF-Compact')));
-                    } else if (!snapshot.hasData) {
-                      return const Center(child: Text('Something went wrong! Please try again later', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700, fontFamily: 'SF-Compact')));
-                    } else {
-                // Parse and display the data from the API
-                      final horoscopeData = snapshot.data!;
-          
-                      return Obx((){
-                        return Text(getPredictionText(horoscopeType.value, horoscopeData),
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, fontFamily: 'SF-Compact', color: Colors.white)
-                        );
-                      });
-                    }
+          subscriptionController.entitlement.value == Entitlement.free
+              ? GestureDetector(
+                  onTap: () async {
+                    await precacheImage(
+                        const AssetImage("assets/images/how-to-play-bg.png"),
+                        context);
+                    Get.to(const UpgradeScreen(showClose: true, goBack: true));
                   },
-                ),
-              ],
-            ),
-          )
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 20),
+                    child: Image.asset('assets/images/locked-horoscope.png'),
+                  ),
+                )
+              : Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  padding: const EdgeInsets.all(24),
+                  constraints: const BoxConstraints(minHeight: 250),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Obx(() {
+                            return Image.asset(
+                                getPredictionImg(horoscopeType.value),
+                                width: 25,
+                                height: 25);
+                          }),
+                          const SizedBox(width: 20),
+                          Obx(() {
+                            return Text(horoscopeType.value,
+                                style: const TextStyle(
+                                    fontFamily: 'Cherry',
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xffC4D0FB)));
+                          })
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      FutureBuilder<HoroscopeData>(
+                        future: fetchHoroscopeData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                      color: Colors.white)),
+                            );
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                                child: Text(
+                                    'Something went wrong! Please try again later',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'SF-Compact')));
+                          } else if (!snapshot.hasData) {
+                            return const Center(
+                                child: Text(
+                                    'Something went wrong! Please try again later',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'SF-Compact')));
+                          } else {
+                            // Parse and display the data from the API
+                            final horoscopeData = snapshot.data!;
+
+                            return Obx(() {
+                              if (horoscopeType.value == 'Luck') {
+                                // If the type is 'Luck', display the luck items as separate lines
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children:
+                                      horoscopeData.prediction.luck.map((item) {
+                                    return Text(
+                                      "$item\n",
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'SF-Compact',
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  }).toList(),
+                                );
+                              } else {
+                                // Default behavior for other horoscope types
+                                return Text(
+                                  getPredictionText(
+                                      horoscopeType.value, horoscopeData),
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'SF-Compact',
+                                    color: Colors.white,
+                                  ),
+                                );
+                              }
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                )
         ],
       ),
     );
   }
+
   String getPredictionText(String horoscopeType, HoroscopeData horoscopeData) {
     if (horoscopeType == 'Relationship') {
       return horoscopeData.prediction.personal;
@@ -520,7 +658,8 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     } else if (horoscopeType == 'Travel') {
       return horoscopeData.prediction.travel;
     } else {
-      return horoscopeData.prediction.luck.toString();  // Return luck as a string
+      return horoscopeData.prediction.luck
+          .toString(); // Return luck as a string
     }
   }
 

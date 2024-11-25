@@ -10,22 +10,22 @@ class HoroscopeController {
     required String day,
     required String apiKey,
     required String accessToken,
+    required String tzone
   }) async {
     try {
       final response = await http.post(
         Uri.parse('https://astroapi-5.divineapi.com/api/v2/daily-horoscope'),
         headers: {
-          'Authorization': 'Bearer ${GlobalVariables.to.accessToken}',
+          'Authorization': 'Bearer ${GlobalVariables.to.horoscopeAccessToken}',
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          'api_key': GlobalVariables.to.apiKey,
+          'api_key': GlobalVariables.to.horoscopeApiKey,
           'sign': sign,
           'day': day,
           'month': DateTime.now().month.toString(),
           'year': DateTime.now().year.toString(),
-          //'tzone': DateTime.now().timeZoneOffset.inHours + DateTime.now().timeZoneOffset.inMinutes / 60.0,
-          'tzone': 5.5,
+          'tzone': tzone,
         }),
       );
 

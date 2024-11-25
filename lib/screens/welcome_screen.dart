@@ -4,12 +4,12 @@ import 'package:games_services/games_services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/home_screen.dart';
-import 'package:whatsignisthis/utils/play_games/add_score_to_leaderboard.dart';
 
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
 import '../utils/functions/open_url.dart';
-import '../utils/play_games/play_games_signin.dart';
+import '../utils/leader_board/add_score_to_leaderboard.dart';
+import '../utils/leader_board/play_games_signin.dart';
 import '../utils/variables.dart';
 import 'onboarding/onboarding.dart';
 import '../utils/functions/fetch_subscription_price.dart';
@@ -44,6 +44,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     // zero and start a new game. It is saved in shared preference so that if the user close app
     // and start playing same level again, so avoid showing dialog again on same level.
     GlobalVariables.to.showHighScoreDialog.value = prefs.getBool('showHighScoreDialog') ?? true;
+    GlobalVariables.to.horoscopeSelectedSign = prefs.getString('horoscope_selected_sign') ?? 'ARIES';
 
     // Checking if user disabled the sound or not.
     bool? soundOff = prefs.getBool('soundOff');
@@ -197,17 +198,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> onBtnClick() async {
     audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
 
-    if(isFirstLaunch) {
+    if(subscriptionController.entitlement.value == Entitlement.premium) {
+      await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+      Get.offAll(const HomeScreen());
+    } else{
       await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
       Get.offAll(const OnboardingScreen());
-    } else{
-      if(subscriptionController.entitlement.value == Entitlement.premium) {
-        await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
-        Get.offAll(const HomeScreen());
-      } else{
-        await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
-        Get.offAll(const OnboardingScreen());
-      }
     }
   }
 

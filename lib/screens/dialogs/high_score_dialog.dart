@@ -5,7 +5,7 @@ import 'package:whatsignisthis/widgets/gradient_button.dart';
 
 import '../../utils/audio_service/audio_services.dart';
 import '../../utils/functions/open_url.dart';
-import '../../utils/play_games/show_leaderboard.dart';
+import '../../utils/leader_board/show_leaderboard.dart';
 
 class HighScoreDialog {
   static bool isDialogShown = false;
