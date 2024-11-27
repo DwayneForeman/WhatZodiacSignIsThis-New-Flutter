@@ -321,17 +321,14 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                 ),
               ),
               Expanded(
-                child: Expanded(
-                  child: PageView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: pageController,
-                    itemCount: 12,
-                    itemBuilder: (context, index) {
-                      return tabView(index); // Pass index to track current page
-                    },
-                  ),
-                )
-                ,
+                child: PageView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: pageController,
+                  itemCount: 12,
+                  itemBuilder: (context, index) {
+                    return tabView(index); // Pass index to track current page
+                  },
+                ),
               ),
             ],
           ),

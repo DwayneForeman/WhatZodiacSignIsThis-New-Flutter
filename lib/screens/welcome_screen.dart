@@ -33,7 +33,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     super.initState();
     initialize();
     fetchSubscriptionPrice();
-    deleteEntriesBeforeYesterday();
   }
 
 

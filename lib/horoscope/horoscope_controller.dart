@@ -33,10 +33,6 @@ class HoroscopeController {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['success'] == 1) {
           // Map the response to the model
-
-          //HoroscopeData horoscopeData = HoroscopeData.fromJson(responseData['data']);
-          //await saveHoroscopeData(horoscopeData);
-
           return HoroscopeData.fromJson(responseData['data']);
         } else {
           throw Exception('Failed to fetch horoscope data');
