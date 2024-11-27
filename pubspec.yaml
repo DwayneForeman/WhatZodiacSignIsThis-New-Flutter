@@ -50,7 +50,7 @@ dependencies:
   workmanager: ^0.5.2
   webview_flutter: ^4.10.0
   http: ^1.2.2
-  flutter_native_splash: ^2.4.3
+  sqflite: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -124,13 +124,3 @@ flutter:
       fonts:
         - asset: assets/fonts/SFProText-Semibold.ttf
           weight: 600
-
-
-flutter_native_splash:
-  color: "#ffffff"
-  image: assets/images/splash-img.png
-
-
-  android_12:
-    color: "#ffffff"
-    image: assets/images/splash-img.png

@@ -7,6 +7,8 @@ import 'package:whatsignisthis/screens/upgrade_screen.dart';
 
 import '../horoscope/horoscope_controller.dart';
 import '../horoscope/model.dart';
+import '../sqflite/database_service.dart';
+import '../sqflite/save_data_in_database.dart';
 import '../subscription/subscription_controller.dart';
 import '../utils/functions/get_time_zone.dart';
 import '../utils/variables.dart';
@@ -27,10 +29,16 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
   late String timezone;
   bool changeSign = false;
   String selectedSign = GlobalVariables.to.horoscopeSelectedSign;
+  int currentPage = 0;
 
   @override
   void initState() {
     super.initState();
+    pageController.addListener(() {
+      setState(() {
+        currentPage = pageController.page!.round();
+      });
+    });
     timezone = getCurrentTimeZone();
     debugPrint('Time Zone: $timezone');
     tabController = TabController(length: 12, vsync: this);
@@ -53,13 +61,66 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
   String selectedDay = DateTime.now().day.toString();
   final HoroscopeController horoscopeController = HoroscopeController();
 
+  // Future<HoroscopeData> fetchHoroscopeData() async {
+  //   return await horoscopeController.fetchHoroscopeData(
+  //       sign: selectedSign,
+  //       day: selectedDay,
+  //       apiKey: GlobalVariables.to.horoscopeApiKey,
+  //       accessToken: GlobalVariables.to.horoscopeAccessToken,
+  //       tzone: timezone);
+  // }
+
   Future<HoroscopeData> fetchHoroscopeData() async {
-    return await horoscopeController.fetchHoroscopeData(
-        sign: selectedSign,
-        day: selectedDay,
-        apiKey: GlobalVariables.to.horoscopeApiKey,
-        accessToken: GlobalVariables.to.horoscopeAccessToken,
-        tzone: timezone);
+    // Check if data exists in the local SQLite database first
+    HoroscopeData? localData = await getHoroscopeDataFromDatabase(selectedSign, selectedDay);
+
+    // If data is found in local database, return it
+    if (localData != null) {
+      return localData;
+    }
+
+    // If no data is found, fetch it from the API
+    HoroscopeData apiData = await horoscopeController.fetchHoroscopeData(
+      sign: selectedSign,
+      day: selectedDay,
+      apiKey: GlobalVariables.to.horoscopeApiKey,
+      accessToken: GlobalVariables.to.horoscopeAccessToken,
+      tzone: timezone,
+    );
+
+    saveHoroscopeDataInDatabase(apiData, date: selectedDay, day: horoscopeDay);
+    // Return the fetched data
+    return apiData;
+  }
+
+  Future<HoroscopeData?> getHoroscopeDataFromDatabase(String sign, String day) async {
+    // Query the database using sign (table name) and day (primary key)
+    var db = await HoroscopeDatabase.instance.database;
+    var result = await db.query(
+      sign,
+      where: 'date = ?',
+      whereArgs: [day],
+    );
+
+    if (result.isNotEmpty) {
+      // Assuming the stored data is serialized as a map
+
+      var record = result.first;
+      debugPrint('Data from local Database');
+      return HoroscopeData(
+        sign: selectedSign, // Assign selectedSign directly
+        prediction: Prediction(
+          personal: record['relationship'] as String, // Assuming relationship field maps to personal
+          health: record['health'] as String,         // Direct assignment from the result
+          profession: record['profession'] as String, // Direct assignment from the result
+          emotions: record['emotions'] as String,     // Direct assignment from the result
+          travel: record['travel'] as String,         // Direct assignment from the result
+          luck: [record['luck'] as String],  // Assuming 'luck' is stored as a comma-separated string
+        ),
+      );
+    }
+
+    return null; // No data found
   }
 
   List<String> zodiacLabels = [
@@ -219,7 +280,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                                       });
                                     },
                                     child: const Icon(Icons.edit,
-                                        color: Colors.white, size: 18))),
+                                        color: Colors.white, size: 22))),
                           ),
                           // Save text
                           Visibility(
@@ -260,23 +321,17 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                 ),
               ),
               Expanded(
-                child: PageView(
+                child: Expanded(
+                  child: PageView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     controller: pageController,
-                    children: [
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                      tabView(),
-                    ]),
+                    itemCount: 12,
+                    itemBuilder: (context, index) {
+                      return tabView(index); // Pass index to track current page
+                    },
+                  ),
+                )
+                ,
               ),
             ],
           ),
@@ -285,7 +340,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     );
   }
 
-  Widget tabView() {
+  Widget tabView(int pageIndex) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -570,7 +625,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                         ],
                       ),
                       const SizedBox(height: 12),
-                      FutureBuilder<HoroscopeData>(
+                      pageIndex == currentPage ? FutureBuilder<HoroscopeData>(
                         future: fetchHoroscopeData(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -608,10 +663,15 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                                 // If the type is 'Luck', display the luck items as separate lines
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:
-                                      horoscopeData.prediction.luck.map((item) {
+                                  children: horoscopeData.prediction.luck.asMap().entries.map((entry) {
+                                    int index = entry.key;
+                                    String item = entry.value;
+
+                                    // Check if it's the last item in the list
                                     return Text(
-                                      "$item\n",
+                                      index == horoscopeData.prediction.luck.length - 1
+                                          ? item
+                                          : "$item\n", // If last item, don't add \n
                                       style: const TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w400,
@@ -637,7 +697,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                             });
                           }
                         },
-                      ),
+                      ) : const SizedBox(),
                     ],
                   ),
                 )

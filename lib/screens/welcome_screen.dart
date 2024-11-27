@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/home_screen.dart';
 
+import '../sqflite/delete_old_data.dart';
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
 import '../utils/functions/open_url.dart';
@@ -32,6 +33,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     super.initState();
     initialize();
     fetchSubscriptionPrice();
+    deleteEntriesBeforeYesterday();
   }
 
 

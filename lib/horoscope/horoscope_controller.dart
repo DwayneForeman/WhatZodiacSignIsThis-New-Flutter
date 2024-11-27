@@ -33,6 +33,10 @@ class HoroscopeController {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['success'] == 1) {
           // Map the response to the model
+
+          //HoroscopeData horoscopeData = HoroscopeData.fromJson(responseData['data']);
+          //await saveHoroscopeData(horoscopeData);
+
           return HoroscopeData.fromJson(responseData['data']);
         } else {
           throw Exception('Failed to fetch horoscope data');
@@ -45,44 +49,3 @@ class HoroscopeController {
     }
   }
 }
-
-//
-//
-// Expanded(
-// child: FutureBuilder<HoroscopeData>(
-// future: fetchHoroscopeData(),
-// builder: (context, snapshot) {
-// if (snapshot.connectionState == ConnectionState.waiting) {
-// return Center(child: CircularProgressIndicator());
-// } else if (snapshot.hasError) {
-// return Center(child: Text('Error: ${snapshot.error}'));
-// } else if (!snapshot.hasData) {
-// return Center(child: Text('No data available'));
-// } else {
-// // Parse and display the data from the API
-// final horoscopeData = snapshot.data!;
-//
-// return Padding(
-// padding: const EdgeInsets.all(16.0),
-// child: ListView(
-// children: [
-// Text('Sign: ${horoscopeData.sign}', style: TextStyle(fontSize: 20)),
-// SizedBox(height: 8),
-// Text('Personal: ${horoscopeData.prediction.personal}', style: TextStyle(fontSize: 16)),
-// SizedBox(height: 8),
-// Text('Health: ${horoscopeData.prediction.health}', style: TextStyle(fontSize: 16)),
-// SizedBox(height: 8),
-// Text('Profession: ${horoscopeData.prediction.profession}', style: TextStyle(fontSize: 16)),
-// SizedBox(height: 8),
-// Text('Emotions: ${horoscopeData.prediction.emotions}', style: TextStyle(fontSize: 16)),
-// SizedBox(height: 8),
-// Text('Travel: ${horoscopeData.prediction.travel}', style: TextStyle(fontSize: 16)),
-// SizedBox(height: 8),
-// Text('Luck: ${horoscopeData.prediction.luck.join(', ')}', style: TextStyle(fontSize: 16)),
-// ],
-// ),
-// );
-// }
-// },
-// ),
-// ),
