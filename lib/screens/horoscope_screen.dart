@@ -182,18 +182,19 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                 ],
               ),
               TabBar(
-                onTap: (index){
-                  if(changeSign == true)
-                  {
+                onTap: (index) {
+                  // Only allow tab switching when `changeSign` is true
+                  if (changeSign) {
                     pageController.jumpToPage(index);
                     tabController.index = index;
                     setState(() {
-                      selectedSign =
-                      zodiacLabels[index];
+                      selectedSign = zodiacLabels[index];
                     });
                   }
                 },
-                physics: changeSign == false ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
+                physics: changeSign == false
+                    ? const NeverScrollableScrollPhysics()
+                    : const AlwaysScrollableScrollPhysics(),
                 dividerHeight: 0,
                 tabAlignment: TabAlignment.start,
                 controller: tabController,
@@ -203,105 +204,117 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                 indicator: const BoxDecoration(),
                 tabs: List.generate(
                   12,
-                  (index) => Tab(
-                    height: changeSign == false ? 70 : 100,
-                    child: SizedBox(
-                      height: changeSign == false ? 70 : 100,
-                      width: 100,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // Background color for the selected label
-                          Visibility(
-                            visible: tabController.index == index,
-                            child: Positioned(
-                              bottom: changeSign == false ? 0 : 30,
-                              child: Container(
-                                height: 47,
-                                width: index == 3 || index == 8 ? 100 : 90,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff5848FE),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    zodiacLabels[index],
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: 'SF-Compact',
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.transparent,
+                      (index) => GestureDetector(
+                    onTap: () {
+                      // Prevent interaction when `changeSign` is false
+                      if (!changeSign) return;
+
+                      pageController.jumpToPage(index);
+                      tabController.index = index;
+                      setState(() {
+                        selectedSign = zodiacLabels[index];
+                      });
+                    },
+                    child: AbsorbPointer(
+                      absorbing: !changeSign && tabController.index != index,
+                      child: Tab(
+                        height: changeSign == false ? 70 : 100,
+                        child: SizedBox(
+                          height: changeSign == false ? 70 : 100,
+                          width: 100,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Background color for the selected label
+                              Visibility(
+                                visible: tabController.index == index,
+                                child: Positioned(
+                                  bottom: changeSign == false ? 0 : 30,
+                                  child: Container(
+                                    height: 47,
+                                    width: index == 3 || index == 8 ? 100 : 90,
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff5848FE),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        zodiacLabels[index],
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: 'SF-Compact',
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          // Zodiac name label
-                          Positioned(
-                            bottom: changeSign == false ? 8 : 38,
-                            child: Text(
-                              zodiacLabels[index],
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'SF-Compact',
-                                fontWeight: FontWeight.w900,
-                                color: tabController.index == index
-                                    ? Colors.white
-                                    : const Color(0xff8d8d8e),
+                              // Zodiac name label
+                              Positioned(
+                                bottom: changeSign == false ? 8 : 38,
+                                child: Text(
+                                  zodiacLabels[index],
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'SF-Compact',
+                                    fontWeight: FontWeight.w900,
+                                    color: tabController.index == index
+                                        ? Colors.white
+                                        : const Color(0xff8d8d8e),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          // Half-visible image
-                          Visibility(
-                            visible: tabController.index == index,
-                            child: Positioned(
-                              top: 0,
-                              child: Image.asset(
-                                imgPaths[index],
-                                height: 40,
-                                fit: BoxFit.contain,
+                              // Half-visible image
+                              Visibility(
+                                visible: tabController.index == index,
+                                child: Positioned(
+                                  top: 0,
+                                  child: Image.asset(
+                                    imgPaths[index],
+                                    height: 40,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          // Edit Icon
-                          Visibility(
-                            visible: tabController.index == index &&
-                                changeSign == false,
-                            child: Positioned(
-                                right: 0,
-                                top: 12,
-                                child: GestureDetector(
+                              // Edit Icon
+                              Visibility(
+                                visible: tabController.index == index && !changeSign,
+                                child: Positioned(
+                                  right: 0,
+                                  top: 12,
+                                  child: GestureDetector(
                                     onTap: () {
                                       setState(() {
                                         changeSign = true;
                                       });
                                     },
                                     child: const Icon(Icons.edit,
-                                        color: Colors.white, size: 22))),
-                          ),
-                          // Save text
-                          Visibility(
-                            visible: tabController.index == index &&
-                                changeSign == true,
-                            child: Positioned(
-                                right: 0,
-                                left: 0,
-                                bottom: 0,
-                                child: GestureDetector(
+                                        color: Colors.white, size: 22),
+                                  ),
+                                ),
+                              ),
+                              // Save text
+                              Visibility(
+                                visible: tabController.index == index && changeSign,
+                                child: Positioned(
+                                  right: 0,
+                                  left: 0,
+                                  bottom: 0,
+                                  child: GestureDetector(
                                     onTap: () async {
                                       SharedPreferences prefs = await SharedPreferences.getInstance();
                                       prefs.setString('horoscope_selected_sign', selectedSign);
                                       setState(() {
                                         changeSign = false;
-                                        GlobalVariables.to.horoscopeSelectedSign = selectedSign;
+                                        GlobalVariables.to.horoscopeSelectedSign =
+                                            selectedSign;
                                       });
                                     },
                                     child: const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text('save',
                                             style: TextStyle(
@@ -312,9 +325,13 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                                         Icon(Icons.check_circle_rounded,
                                             color: Color(0xff84FAB0), size: 16),
                                       ],
-                                    ))),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
