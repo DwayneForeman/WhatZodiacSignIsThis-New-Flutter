@@ -26,7 +26,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   late bool isFirstLaunch;
 
   final AudioService audioService = AudioService();
-  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
+  final SubscriptionController subscriptionController =
+      Get.put(SubscriptionController());
 
   @override
   void initState() {
@@ -35,17 +36,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     fetchSubscriptionPrice();
   }
 
-
-
-  Future<void> initialize() async{
+  Future<void> initialize() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Getting show high score flag from shared preference for showing high score dialog.
     // Once dialog is shown, it is set to false, and become true again once the user reach to
     // zero and start a new game. It is saved in shared preference so that if the user close app
     // and start playing same level again, so avoid showing dialog again on same level.
-    GlobalVariables.to.showHighScoreDialog.value = prefs.getBool('showHighScoreDialog') ?? true;
-    GlobalVariables.to.horoscopeSelectedSign = prefs.getString('horoscope_selected_sign') ?? 'ARIES';
+    GlobalVariables.to.showHighScoreDialog.value =
+        prefs.getBool('showHighScoreDialog') ?? true;
+    GlobalVariables.to.horoscopeSelectedSign =
+        prefs.getString('horoscope_selected_sign') ?? 'ARIES';
 
     // Checking if user disabled the sound or not.
     bool? soundOff = prefs.getBool('soundOff');
@@ -62,7 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     // if its new install set the points to 100 and set the value of variable to 1 which shows
     // first three questions to user.
-    if(isFirstLaunch){
+    if (isFirstLaunch) {
       await prefs.setInt('points', 100);
       GlobalVariables.to.points.value = 100;
       isFirstLaunch = true;
@@ -72,7 +73,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     // If its not new install
     else {
       // check if user played first 3 questions
-      GlobalVariables.to.newInstallQuestionToShow.value = prefs.getInt('newInstallQuestionToShow') ?? 0;
+      GlobalVariables.to.newInstallQuestionToShow.value =
+          prefs.getInt('newInstallQuestionToShow') ?? 0;
 
       // Get points from shared preference, if not present in shared preference
       // then set scores to 100.
@@ -81,24 +83,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       // Get user's score from leaderboard so check that if local high scores are updated or not
       // on leaderboard. Maybe user played offline last time, so we update the score to leader board
       // this time if local high scores are greater than leader board score of player.
-      int? score = await GamesServices.getPlayerScore(androidLeaderboardID: GlobalVariables.to.androidLeaderBoardID);
-      if(GlobalVariables.to.points.value > score!){
+      int? score = await GamesServices.getPlayerScore(
+          androidLeaderboardID: GlobalVariables.to.androidLeaderBoardID,
+          iOSLeaderboardID: GlobalVariables.to.iosLeaderBoardID);
+      if (GlobalVariables.to.points.value > score!) {
         submitScore(GlobalVariables.to.points.value);
       }
     }
 
     // Getting high score from leaderboard and saving it into shared preference (if not present).
-    int score;
-    if(await GamesServices.isSignedIn) {
-      // getting score from leader board
-      score = await GamesServices.getPlayerScore(androidLeaderboardID: GlobalVariables.to.androidLeaderBoardID) ?? 100;
-    } else{
-      // if not present in leader board then setting score to 100.
-      score = 100;
-    }
+    int score = 100;
     // if high score instance is present in shared preference
     // set the value fo high score variable equal to that instance.
-    if(prefs.containsKey('high_scores')){
+    if (prefs.containsKey('high_scores')) {
       GlobalVariables.to.highScores.value = prefs.getInt('high_scores')!;
     }
     // If high score is not present in shared preference, then adding that in shared
@@ -108,7 +105,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       GlobalVariables.to.highScores.value = score;
       debugPrint(GlobalVariables.to.highScores.value.toString());
     }
-
   }
 
   @override
@@ -130,8 +126,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             children: [
               const SizedBox(height: 30),
               Image.asset("assets/images/onboarding-logo.png",
-                  width: width * 0.9,
-                  height: width * 0.9),
+                  width: width * 0.9, height: width * 0.9),
               const Spacer(),
               GestureDetector(
                 onTap: () {
@@ -149,7 +144,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                   child: Center(
-                    child: Image.asset('assets/images/letsplay-text.png', height: 40),
+                    child: Image.asset('assets/images/letsplay-text.png',
+                        height: 40),
                   ),
                 ),
               ),
@@ -172,14 +168,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                       TextSpan(
                         text: 'Terms of Service.',
-                        style: const TextStyle(decoration: TextDecoration.underline),
+                        style: const TextStyle(
+                            decoration: TextDecoration.underline),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                            openUrl(link: 'https://www.whatzodiacsignisthis.com/terms');
+                            audioService.playSound(
+                                audioPath: 'assets/sounds/button-press.mpeg');
+                            openUrl(
+                                link:
+                                    'https://www.whatzodiacsignisthis.com/terms');
                           },
                       ),
-                      const TextSpan(text: ' Learn how we protect your data in our '),
+                      const TextSpan(
+                          text: ' Learn how we protect your data in our '),
                       const TextSpan(
                         text: 'Privacy Policy.',
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -199,11 +200,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> onBtnClick() async {
     audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
 
-    if(subscriptionController.entitlement.value == Entitlement.premium) {
-      await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+    if (subscriptionController.entitlement.value == Entitlement.premium) {
+      await precacheImage(
+          const AssetImage("assets/images/home-bg.png"), context);
       Get.offAll(const HomeScreen());
-    } else{
-      await precacheImage(const AssetImage("assets/images/onboarding-carousel-bg.png"), context);
+    } else {
+      await precacheImage(
+          const AssetImage("assets/images/onboarding-carousel-bg.png"),
+          context);
       Get.offAll(const OnboardingScreen());
     }
   }

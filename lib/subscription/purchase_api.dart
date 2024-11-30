@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class PurchaseApi{
   static const _apiKeyAndroid = 'goog_ahJhqWqXrFPgGNOfSaYpzNYZWjJ';
+  static const _apiKeyIOS = 'appl_mJjFXpPRWeGRojbyBgdUMGJzACq';
 
   static Future init() async {
     await Purchases.setLogLevel(LogLevel.debug);
     PurchasesConfiguration configuration;
-    configuration = PurchasesConfiguration(_apiKeyAndroid);
+    configuration = PurchasesConfiguration(Platform.isAndroid ? _apiKeyAndroid : _apiKeyIOS);
     await Purchases.configure(configuration);
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:whatsignisthis/local_storage/variables.dart';
 import 'package:whatsignisthis/screens/welcome_screen.dart';
 import 'package:whatsignisthis/subscription/purchase_api.dart';
 import 'package:whatsignisthis/subscription/subscription_controller.dart';
@@ -22,7 +21,6 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   Get.put(GlobalVariables());
-  Get.put(LocalVariables());
 
   //int initialDelay = getDifferenceToNext8PMInSeconds();
   // Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
@@ -51,7 +49,6 @@ void main() async {
     initialDelay: Duration(seconds: eveningDelay),
     frequency: const Duration(days: 1),
   );
-
   runApp(const MyApp());
 }
 

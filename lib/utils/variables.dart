@@ -13,6 +13,7 @@ class GlobalVariables {
   RxBool showNextQuestion = true.obs;
   RxString weeklyPrice = '\$6.99'.obs;
   String androidLeaderBoardID = 'CgkImMyHs-MNEAIQAQ';
+  String iosLeaderBoardID = 'zodiacmemelords';
   String horoscopeApiKey = '9ff0525c64bf3d4c9957a1d4397f1b40';
   String horoscopeAccessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FzdHJvYXBpLTEuZGl2aW5lYXBpLmNvbS9hcGkvYXV0aC1hcGktdXNlciIsImlhdCI6MTczMTg5NTc2OCwibmJmIjoxNzMxODk1NzY4LCJqdGkiOiJoTmhyZlRzRURqM2dQbHdPIiwic3ViIjoiMjk4MSIsInBydiI6ImU2ZTY0YmIwYjYxMjZkNzNjNmI5N2FmYzNiNDY0ZDk4NWY0NmM5ZDcifQ.p6jwvgEAPlzND7HA6JPvvJeMaUU1DhHH1z9CUyco2DI';
   String horoscopeSelectedSign = 'ARIES';
