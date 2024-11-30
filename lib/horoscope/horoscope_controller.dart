@@ -8,6 +8,8 @@ class HoroscopeController {
   Future<HoroscopeData> fetchHoroscopeData({
     required String sign,
     required String day,
+    required String month,
+    required String year,
     required String apiKey,
     required String accessToken,
     required String tzone
@@ -23,8 +25,8 @@ class HoroscopeController {
           'api_key': GlobalVariables.to.horoscopeApiKey,
           'sign': sign,
           'day': day,
-          'month': DateTime.now().month.toString(),
-          'year': DateTime.now().year.toString(),
+          'month': month,
+          'year': year,
           'tzone': tzone,
         }),
       );

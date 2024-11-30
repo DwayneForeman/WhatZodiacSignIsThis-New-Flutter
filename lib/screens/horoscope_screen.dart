@@ -59,6 +59,8 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
   String horoscopeDay = 'today';
   RxString horoscopeType = 'Relationship'.obs;
   String selectedDay = DateTime.now().day.toString();
+  String selectedMonth = DateTime.now().month.toString();
+  String selectedYear = DateTime.now().year.toString();
   final HoroscopeController horoscopeController = HoroscopeController();
 
   // Future<HoroscopeData> fetchHoroscopeData() async {
@@ -83,6 +85,8 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     HoroscopeData apiData = await horoscopeController.fetchHoroscopeData(
       sign: selectedSign,
       day: selectedDay,
+      month: selectedMonth,
+      year: selectedYear,
       apiKey: GlobalVariables.to.horoscopeApiKey,
       accessToken: GlobalVariables.to.horoscopeAccessToken,
       tzone: timezone,
@@ -380,12 +384,12 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                   if (horoscopeDay != 'yesterday') {
                     setState(() {
                       horoscopeDay = 'yesterday';
-                      selectedDay = DateTime.now()
-                          .subtract(const Duration(days: 1))
-                          .day
-                          .toString();
+                      DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
+                      selectedDay = yesterday.day.toString();
+                      selectedMonth = yesterday.month.toString();
+                      selectedYear = yesterday.year.toString();
                       if (kDebugMode) {
-                        print(selectedDay);
+                        print("$selectedDay-$selectedMonth-$selectedYear");
                       }
                     });
                   }
@@ -415,7 +419,9 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                     setState(() {
                       horoscopeDay = 'today';
                       selectedDay = DateTime.now().day.toString();
-                      debugPrint(selectedDay);
+                      selectedMonth = DateTime.now().month.toString();
+                      selectedYear = DateTime.now().year.toString();
+                      debugPrint('$selectedDay-$selectedMonth-$selectedYear');
                     });
                   }
                 },
@@ -443,10 +449,13 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                   if (horoscopeDay != 'tomorrow') {
                     setState(() {
                       horoscopeDay = 'tomorrow';
-                      selectedDay = DateTime.now()
-                          .add(const Duration(days: 1))
-                          .day
-                          .toString();
+                      DateTime tommorow = DateTime.now().add(const Duration(days: 1));
+                      selectedDay = tommorow.day.toString();
+                      selectedMonth = tommorow.month.toString();
+                      selectedYear = tommorow.year.toString();
+                      if (kDebugMode) {
+                        print("$selectedDay-$selectedMonth-$selectedYear");
+                      }
                     });
                   }
                 },
