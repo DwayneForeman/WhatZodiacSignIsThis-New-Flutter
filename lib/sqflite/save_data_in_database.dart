@@ -3,7 +3,7 @@ import 'database_model.dart';
 import 'database_service.dart';
 
 Future<void> saveHoroscopeDataInDatabase(HoroscopeData horoscopeData,
-    {required String date, required String day}) async {
+    {required String date}) async {
   // Create an instance of HoroscopeDatabaseModel from the fetched HoroscopeData
   HoroscopeDatabaseModel horoscopeModel = HoroscopeDatabaseModel(
     date: date,

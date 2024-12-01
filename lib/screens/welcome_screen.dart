@@ -181,9 +181,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                       const TextSpan(
                           text: ' Learn how we protect your data in our '),
-                      const TextSpan(
+                      TextSpan(
                         text: 'Privacy Policy.',
-                        style: TextStyle(decoration: TextDecoration.underline),
+                        style: const TextStyle(
+                            decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            audioService.playSound(
+                                audioPath: 'assets/sounds/button-press.mpeg');
+                            openUrl(
+                                link:
+                                'https://www.whatzodiacsignisthis.com/terms');
+                          },
                       ),
                     ],
                   ),

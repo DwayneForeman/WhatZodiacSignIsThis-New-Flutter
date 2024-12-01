@@ -223,6 +223,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                                 GestureDetector(
                                     onTap: (){
                                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                      openUrl(link: 'https://www.WhatZodiacSignIsThis.com/terms');
                                     },
                                     child: Text('Privacy', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.0333))),
                                 GestureDetector(

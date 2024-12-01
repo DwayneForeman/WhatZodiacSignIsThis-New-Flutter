@@ -1,12 +1,16 @@
 import 'package:sqflite/sqflite.dart';
 
-Future<void> deleteEntriesBeforeYesterday() async {
+Future<void> deleteDatabaseEntriesBeforeYesterday() async {
   try {
     // Open the horoscope database
     final Database db = await openDatabase('horoscope.db');
 
-    // Get yesterday's date as a numeric value (e.g., 27 for the 27th of the month)
-    int yesterday = DateTime.now().subtract(const Duration(days: 1)).day;
+    // Get yesterday's date at midnight (start of the day)
+    DateTime now = DateTime.now();
+    DateTime yesterday = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 1));
+
+    // Convert yesterday to the "yyyy-MM-dd" format
+    String yesterdayString = "${yesterday.year}-${yesterday.month.toString()}-${yesterday.day.toString()}";
 
     // List of tables in the horoscope database
     List<String> tables = [
@@ -22,28 +26,20 @@ Future<void> deleteEntriesBeforeYesterday() async {
       'capricorn',
       'aquarius',
       'pisces'
-    ]; // Replace with actual table names if different
+    ];
 
     // Begin a transaction for safe deletion
     await db.transaction((txn) async {
-      if (yesterday == 1 || yesterday == 2) {
-        // If the date is 1 or 2, delete all entries in all tables
-        for (String table in tables) {
-          await txn.delete(table); // Delete all rows without conditions
-        }
-        print("All entries deleted from all tables because yesterday was day $yesterday.");
-      } else {
-        // On other days, delete entries before yesterday
-        for (String table in tables) {
-          await txn.delete(
-            table,
-            where: 'date < ?',
-            whereArgs: [yesterday],
-          );
-        }
-        print("All entries before yesterday (date < $yesterday) deleted from the horoscope database.");
+      for (String table in tables) {
+        await txn.delete(
+          table,
+          where: 'date < ?',
+          whereArgs: [yesterdayString],
+        );
       }
     });
+
+    print("All entries before $yesterdayString deleted from the horoscope database.");
   } catch (e) {
     print("Error while deleting entries: $e");
   }

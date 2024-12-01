@@ -6,6 +6,7 @@ import 'package:whatsignisthis/subscription/purchase_api.dart';
 import 'package:whatsignisthis/subscription/subscription_controller.dart';
 import 'package:whatsignisthis/utils/functions/get_next_8AM.dart';
 import 'package:whatsignisthis/utils/functions/get_next_8PM.dart';
+import 'package:whatsignisthis/utils/functions/get_time_zone.dart';
 import 'package:whatsignisthis/utils/variables.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -31,6 +32,8 @@ void main() async {
 
   int eveningDelay = getDifferenceToNext8PMInSeconds();
   int morningDelay = getDifferenceToNext8AMInSeconds();
+  String timezone = getCurrentTimeZone();
+  print("Timezonee is $timezone");
 
   Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 

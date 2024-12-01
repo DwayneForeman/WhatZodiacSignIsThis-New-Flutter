@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:get/get.dart';
 import 'package:whatsignisthis/screens/how_to_play.dart';
 import 'package:whatsignisthis/utils/functions/open_url.dart';
 
+import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
+import 'home_screen.dart';
 
 void openMenuBottomSheet(BuildContext context) {
   showModalBottomSheet(
@@ -31,6 +35,7 @@ class MenuBottomSheet extends StatefulWidget {
 class _MenuBottomSheetState extends State<MenuBottomSheet> {
 
   final AudioService audioService = AudioService();
+  final SubscriptionController subscriptionController = Get.put(SubscriptionController());
 
 
   @override
@@ -76,7 +81,7 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                 MenuRow(
                     onClick: (){
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                      openUrl(link: 'https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
+                      openUrl(link: Platform.isAndroid ? 'https://play.google.com/store/apps/details?id=com.appwiththat.whatsignisthis' : 'https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
                     },
                     title: "Rate Us",
                     iconPath: "assets/images/star-icon.png",
@@ -84,14 +89,18 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                 MenuRow(
                     onClick: (){
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
-                      Share.share('LMFAO! This app is JOKES! https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
+                      Share.share(Platform.isAndroid ? 'LMFAO! This app is JOKES! https://play.google.com/store/apps/details?id=com.appwiththat.whatsignisthis' : 'LMFAO! This app is JOKES! https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
                     },
                     title: "Share App",
                     iconPath: "assets/images/share-app-icon.png",
                     iconSize: 28),
                 MenuRow(
-                    onClick: (){
+                    onClick: () async{
                       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      Get.back();
+                      Get.find<HomeController>().isLoading.value = true;
+                      await subscriptionController.restorePurchases();
+                      Get.find<HomeController>().isLoading.value = false;
                     },
                     title: "Restore Purchase",
                     iconPath: "assets/images/restore-purchase-icon.png",

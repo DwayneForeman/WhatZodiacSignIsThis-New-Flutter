@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/upgrade_screen.dart';
+import 'package:whatsignisthis/sqflite/delete_old_data.dart';
 
 import '../horoscope/horoscope_controller.dart';
 import '../horoscope/model.dart';
@@ -43,20 +44,16 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
     debugPrint('Time Zone: $timezone');
     tabController = TabController(length: 12, vsync: this);
     tabController.index = zodiacLabels.indexOf(selectedSign.toUpperCase());
-
-    // Listener to update selectedSign when the tab changes
-    // tabController.addListener(() async {
-    //   if (tabController.indexIsChanging) {
-    //     setState(() {
-    //       GlobalVariables.to.horoscopeSelectedSign = zodiacLabels[tabController.index];
-    //       debugPrint(GlobalVariables.to.horoscopeSelectedSign);
-    //     });
-    //   }
-    // });
+    if(subscriptionController.entitlement.value == Entitlement.premium){
+      Future.delayed(const Duration(seconds: 5), (){
+        deleteDatabaseEntriesBeforeYesterday();
+      });
+    }
   }
 
 
   String horoscopeDay = 'today';
+  String date = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
   RxString horoscopeType = 'Relationship'.obs;
   String selectedDay = DateTime.now().day.toString();
   String selectedMonth = DateTime.now().month.toString();
@@ -74,7 +71,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
 
   Future<HoroscopeData> fetchHoroscopeData() async {
     // Check if data exists in the local SQLite database first
-    HoroscopeData? localData = await getHoroscopeDataFromDatabase(selectedSign, selectedDay);
+    HoroscopeData? localData = await getHoroscopeDataFromDatabase(selectedSign, date);
 
     // If data is found in local database, return it
     if (localData != null) {
@@ -92,7 +89,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
       tzone: timezone,
     );
 
-    saveHoroscopeDataInDatabase(apiData, date: selectedDay, day: horoscopeDay);
+    saveHoroscopeDataInDatabase(apiData, date: date);
     // Return the fetched data
     return apiData;
   }
@@ -388,6 +385,7 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                       selectedDay = yesterday.day.toString();
                       selectedMonth = yesterday.month.toString();
                       selectedYear = yesterday.year.toString();
+                      date = "$selectedYear-$selectedMonth-$selectedDay";
                       if (kDebugMode) {
                         print("$selectedDay-$selectedMonth-$selectedYear");
                       }
@@ -421,7 +419,8 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                       selectedDay = DateTime.now().day.toString();
                       selectedMonth = DateTime.now().month.toString();
                       selectedYear = DateTime.now().year.toString();
-                      debugPrint('$selectedDay-$selectedMonth-$selectedYear');
+                      date = "$selectedYear-$selectedMonth-$selectedDay";
+                      debugPrint(date);
                     });
                   }
                 },
@@ -453,8 +452,9 @@ class _HoroscopeScreenState extends State<HoroscopeScreen>
                       selectedDay = tommorow.day.toString();
                       selectedMonth = tommorow.month.toString();
                       selectedYear = tommorow.year.toString();
+                      date = "$selectedYear-$selectedMonth-$selectedDay";
                       if (kDebugMode) {
-                        print("$selectedDay-$selectedMonth-$selectedYear");
+                        print(date);
                       }
                     });
                   }
