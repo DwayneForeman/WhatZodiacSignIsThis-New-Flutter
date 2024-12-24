@@ -49,7 +49,7 @@ class _Level1ScreenState extends State<Level1Screen> {
     options.add(correctAnswer);
     options.shuffle();
     audioService.playSound(
-        audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
+        audioPath: 'assets/sounds/bg-music.mp3', loop: true);
     List<String> correctSounds = List.from(GlobalVariables.correctAnsSounds);
     correctSounds.shuffle();
     randomCorrectSound = correctSounds[0];
@@ -95,7 +95,7 @@ class _Level1ScreenState extends State<Level1Screen> {
                             if (!isUsed50 &&
                                 GlobalVariables.to.points.value >= 5) {
                                audioService.playSound(
-                                  audioPath: 'assets/sounds/balloon-tap.mpeg');
+                                  audioPath: 'assets/sounds/balloon-tap.mp3');
                               getRandomIncorrectAnswers();
                               isUsed50 = true;
                               Points.usePoints(5);
@@ -156,7 +156,8 @@ class _Level1ScreenState extends State<Level1Screen> {
           setState(() {
             selectedAnswer = label;
           });
-          audioService.stopSound();
+          await audioService.stopSound();
+          await Future.delayed(const Duration(milliseconds: 500));
           await onOptionClick(
               audioService: audioService,
               level: 1,
@@ -166,9 +167,9 @@ class _Level1ScreenState extends State<Level1Screen> {
               imgPath: imgPath,
               incorrectAnsLabel: label,
               randomCorrectSound:
-                  randomCorrectSound ?? 'assets/sounds/correct-ans1.mpeg',
+                  randomCorrectSound ?? 'assets/sounds/correct-ans1.mp3',
               randomIncorrectSound:
-                  randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mpeg',
+                  randomIncorrectSound ?? 'assets/sounds/incorrect-ans1.mp3',
               selectedAnswer: selectedAnswer);
           if(GlobalVariables.to.showNextQuestion.value == true){
             showNextQuestion();

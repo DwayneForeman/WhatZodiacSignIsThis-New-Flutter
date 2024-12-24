@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               GestureDetector(
                                   onTap: () async {
-                                    audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                    audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                                     disableSound();
                                   },
                                   child: Obx(() => Image.asset(
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Spacer(),
                         GestureDetector(
                             onTap: () async {
-                              audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                              audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                               if(await GamesServices.isSignedIn) {
                                 showLeaderboard();
                               } else {
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(width: 12),
                         GestureDetector(
                             onTap: (){
-                              audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                              audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                               openMenuBottomSheet(context);
                             },
                             child: Image.asset('assets/images/menu-icon.png', width: width*0.1111, height: width*0.1111)),
@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         GestureDetector(
                             onTap: () async {
-                             audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                             audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                              onLevel1Start(context);
                             },
                             child: Padding(
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(width: 10),
                         GestureDetector(
                             onTap: () async {
-                              audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                              audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                               if(subscriptionController.entitlement.value == Entitlement.premium) {
                                 await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
                                 startLevel(2);
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 4),
                     GestureDetector(
                         onTap: () async {
-                          audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                          audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                           if(subscriptionController.entitlement.value == Entitlement.premium) {
                             await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
                             startLevel(3);

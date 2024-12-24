@@ -48,7 +48,7 @@ class HighScoreDialog {
                           width: 95, height: 95),
                           GestureDetector(
                             onTap: (){
-                              audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                              audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                               Get.back();
                             },
                             child: Image.asset('assets/images/close-icon.png',
@@ -65,7 +65,7 @@ class HighScoreDialog {
                     const SizedBox(height: 36),
                     GradientButton(
                         onTap: (){
-                          audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                          audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                           openUrl(link: 'https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
                         },
                         text: 'RATE US',
@@ -76,7 +76,7 @@ class HighScoreDialog {
                     const SizedBox(height: 12),
                     GradientButton(
                         onTap: () async {
-                          audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                          audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                           if(await GamesServices.isSignedIn) {
                             showLeaderboard();
                           } else {

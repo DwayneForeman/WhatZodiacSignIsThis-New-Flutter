@@ -1,3 +1,4 @@
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -33,16 +34,16 @@ void main() async {
   int eveningDelay = getDifferenceToNext8PMInSeconds();
   int morningDelay = getDifferenceToNext8AMInSeconds();
   String timezone = getCurrentTimeZone();
-  print("Timezonee is $timezone");
+  debugPrint("Timezone is $timezone");
 
-  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+  await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
   // Morning notification task
   Workmanager().registerPeriodicTask(
     "1",
     "MorningNotification",
     initialDelay: Duration(seconds: morningDelay),
-    frequency: const Duration(days: 1),
+    frequency: const Duration(seconds: 86400),
   );
 
   // Evening notification task
@@ -50,8 +51,9 @@ void main() async {
     "2",
     "EveningNotification",
     initialDelay: Duration(seconds: eveningDelay),
-    frequency: const Duration(days: 1),
+    frequency: const Duration(seconds: 86400),
   );
+
   runApp(const MyApp());
 }
 

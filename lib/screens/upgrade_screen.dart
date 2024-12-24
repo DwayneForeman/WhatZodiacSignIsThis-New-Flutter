@@ -1,4 +1,5 @@
 import 'package:confetti/confetti.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -24,6 +25,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
   final AudioService audioService = AudioService();
   final SubscriptionController subscriptionController = Get.put(SubscriptionController());
   late ConfettiController confettiController;
+  final FacebookAppEvents facebookAppEvents = FacebookAppEvents();
 
   @override
   void initState() {
@@ -34,7 +36,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
 
   bool isLoading = false;
   int counter = 0;
-  DateTime targetDate = DateTime(2024, 12, 5);
+  DateTime targetDate = DateTime(2024, 12, 25);
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                                     if(widget.goBack){
                                       Get.back();
                                     } else{
-                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                                       await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
                                       Get.offAll(const HomeScreen());
                                     }
@@ -158,12 +160,12 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                           Image.asset('assets/images/go-premium.png', width: width*0.8),
                           const SizedBox(height: 28),
                           Text('First 3 Days For Free', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: width*0.0416)),
-                          Text('Then ${GlobalVariables.to.weeklyPrice.value}/ week', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.03888)),
+                          Text('Then ${GlobalVariables.to.monthlyPrice.value}/ month', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.03888)),
                           Text('Billing starts after trial.', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.02777)),
                           const SizedBox(height: 16),
                           GestureDetector(
                             onTap: () async {
-                              audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                              audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                               final offerings = await PurchaseApi.fetchOffers();
                               if (offerings.isEmpty) {
                                 debugPrint('Error Fetching Prices');
@@ -180,13 +182,23 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                                     .map((offer) => offer.availablePackages)
                                     .expand((pair) => pair)
                                     .toList();
-                                await PurchaseApi.purchasePackage(packages[0]);
+                                final packageToPurchase = packages[1];
+                                await PurchaseApi.purchasePackage(packageToPurchase);
                                 await Purchases.syncPurchases();
                                 await SubscriptionController().fetchCustomerInfo();
                                 setState(() {
                                   isLoading = false;
                                 });
                                 if(subscriptionController.entitlement.value == Entitlement.premium) {
+                                  await facebookAppEvents.logEvent(
+                                    name: 'Subscribe',
+                                    parameters: {
+                                      'fb_content_id': packageToPurchase.identifier,
+                                      'fb_currency': packageToPurchase.storeProduct.currencyCode,
+                                      'fb_description': packageToPurchase.storeProduct.title,
+                                      'fb_num_items': '1',
+                                    },
+                                  );
                                    confettiController.play();
                                    await Future.delayed(const Duration(seconds: 3));
                                   Get.offAll(const HomeScreen());
@@ -222,19 +234,19 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                               children: [
                                 GestureDetector(
                                     onTap: (){
-                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                                       openUrl(link: 'https://www.WhatZodiacSignIsThis.com/terms');
                                     },
                                     child: Text('Privacy', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.0333))),
                                 GestureDetector(
                                     onTap: (){
-                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                                       openUrl(link: 'https://www.WhatZodiacSignIsThis.com/terms');
                                     },
                                     child: Text('Terms', style: TextStyle(fontFamily: 'AvenirNext', color: Colors.white, fontWeight: FontWeight.w500, fontSize: width*0.0333))),
                                 GestureDetector(
                                     onTap: () async{
-                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                                       setState(() {
                                         isLoading = true;
                                       });

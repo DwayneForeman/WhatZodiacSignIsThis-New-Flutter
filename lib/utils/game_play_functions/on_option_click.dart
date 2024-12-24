@@ -72,7 +72,7 @@ Future<void> onOptionClick({required BuildContext context, required String selec
           await Future.delayed(const Duration(seconds: 3));
           await gameOverCheck(context, level);
           audioService.playSound(
-              audioPath: 'assets/sounds/bg-music.mpeg', loop: true);
+              audioPath: 'assets/sounds/bg-music.mp3', loop: true);
     }
     // if sound is disabled
     else {

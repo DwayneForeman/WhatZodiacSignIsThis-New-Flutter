@@ -56,7 +56,7 @@ class GameOverDialog {
                       const SizedBox(height: 30),
                       GradientButton(
                           onTap: () async {
-                            audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                            audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                             GlobalVariables.to.showNextQuestion.value = true;
                             MapEntry<String, String> question = await getRandomQuestion();
                             switch(replyLevel){
@@ -76,7 +76,7 @@ class GameOverDialog {
                       const SizedBox(height: 12),
                       GradientButton(
                           onTap: (){
-                            audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                            audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                             Share.share('LMFAO! This app is JOKES! https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
                           },
                           text: 'SHARE W/FRIENDS',
@@ -94,7 +94,7 @@ class GameOverDialog {
                       const SizedBox(height: 12),
                       GradientButton(
                           onTap: (){
-                            audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                            audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                             openUrl(link: 'https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
                           },
                           text: 'RATE US',

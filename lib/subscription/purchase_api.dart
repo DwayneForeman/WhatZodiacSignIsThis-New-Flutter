@@ -10,7 +10,7 @@ class PurchaseApi{
   static Future init() async {
     await Purchases.setLogLevel(LogLevel.debug);
     PurchasesConfiguration configuration;
-    configuration = PurchasesConfiguration(Platform.isAndroid ? _apiKeyAndroid : _apiKeyIOS);
+    configuration = PurchasesConfiguration(Platform.isIOS ? _apiKeyIOS : _apiKeyAndroid);
     await Purchases.configure(configuration);
   }
 
@@ -21,6 +21,7 @@ class PurchaseApi{
 
       return current == null ? [] : [current];
     } on PlatformException catch(e) {
+      print('Error fetching offerings: $e');
       return [];
     }
   }

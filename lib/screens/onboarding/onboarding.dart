@@ -113,7 +113,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> onNextBtnTap() async{
     // Button Press Sound
-    audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+    audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
 
     //On Click of Next on Last Carousel item
     if (carouselController.page == 3) {

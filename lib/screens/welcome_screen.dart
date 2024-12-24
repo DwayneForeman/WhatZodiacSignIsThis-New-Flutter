@@ -9,7 +9,6 @@ import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
 import '../utils/functions/open_url.dart';
 import '../utils/leader_board/add_score_to_leaderboard.dart';
-import '../utils/leader_board/play_games_signin.dart';
 import '../utils/variables.dart';
 import 'onboarding/onboarding.dart';
 import '../utils/functions/fetch_subscription_price.dart';
@@ -52,10 +51,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     GlobalVariables.to.disableSound.value = soundOff ?? false;
 
     // play laughing sound on start of welcome screen.
-    audioService.playSound(audioPath: 'assets/sounds/laughing.mpeg');
+    audioService.playSound(audioPath: 'assets/sounds/laughing.mp3');
 
     // signin to google play games.
-    await playGamesSignin();
+    await GameAuth.signIn();
 
     // check if it is new install
     isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
@@ -85,6 +84,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       int? score = await GamesServices.getPlayerScore(
           androidLeaderboardID: GlobalVariables.to.androidLeaderBoardID,
           iOSLeaderboardID: GlobalVariables.to.iosLeaderBoardID);
+      if(score!=null) {
+        prefs.setInt('high_scores', score);
+        GlobalVariables.to.highScores.value = score;
+      }
       if (GlobalVariables.to.points.value > score!) {
         submitScore(GlobalVariables.to.points.value);
       }
@@ -172,7 +175,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             audioService.playSound(
-                                audioPath: 'assets/sounds/button-press.mpeg');
+                                audioPath: 'assets/sounds/button-press.mp3');
                             openUrl(
                                 link:
                                     'https://www.whatzodiacsignisthis.com/terms');
@@ -187,7 +190,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             audioService.playSound(
-                                audioPath: 'assets/sounds/button-press.mpeg');
+                                audioPath: 'assets/sounds/button-press.mp3');
                             openUrl(
                                 link:
                                 'https://www.whatzodiacsignisthis.com/terms');
@@ -206,7 +209,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Future<void> onBtnClick() async {
-    audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+    audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
 
     if (subscriptionController.entitlement.value == Entitlement.premium) {
       await precacheImage(

@@ -55,7 +55,7 @@ class GameHeader extends StatelessWidget {
                   GestureDetector(
                       onTap: () async {
                         await audioService.playSound(
-                            audioPath: 'assets/sounds/button-press.mpeg');
+                            audioPath: 'assets/sounds/button-press.mp3');
                         audioService.stopSound();
                         await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
                         Get.offAll(const HomeScreen());

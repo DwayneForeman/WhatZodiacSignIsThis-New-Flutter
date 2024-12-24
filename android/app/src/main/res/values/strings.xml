@@ -3,4 +3,6 @@
     <!-- Replace 0000000000 with your game’s project id. Example value shown above.  -->
 <!--    <string translatable="false"  name="game_services_project_id"> 473358788120 </string>-->
     <string name="app_id">473358788120</string>
+    <string name="facebook_app_id">877875347067429</string>
+    <string name="facebook_client_token">b37daf6e0dae2f89ef7fa80553141f2c</string>
 </resources>

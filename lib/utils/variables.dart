@@ -12,6 +12,7 @@ class GlobalVariables {
   RxBool showHighScoreDialog = true.obs;
   RxBool showNextQuestion = true.obs;
   RxString weeklyPrice = '\$6.99'.obs;
+  RxString monthlyPrice = '\$9.99'.obs;
   String androidLeaderBoardID = 'CgkImMyHs-MNEAIQAQ';
   String iosLeaderBoardID = 'zodiacmemelords';
   String horoscopeApiKey = '9ff0525c64bf3d4c9957a1d4397f1b40';
@@ -19,17 +20,17 @@ class GlobalVariables {
   String horoscopeSelectedSign = 'ARIES';
 
   static List<String> correctAnsSounds = [
-    'assets/sounds/correct-ans1.mpeg',
-    'assets/sounds/correct-ans2.mpeg',
-    'assets/sounds/correct-ans3.mpeg',
-    'assets/sounds/correct-ans4.mpeg',
+    'assets/sounds/correct-ans1.mp3',
+    'assets/sounds/correct-ans2.mp3',
+    'assets/sounds/correct-ans3.mp3',
+    'assets/sounds/correct-ans4.mp3',
   ];
 
   static List<String> incorrectAnsSounds = [
-    'assets/sounds/incorrect-ans1.mpeg',
-    'assets/sounds/incorrect-ans2.mpeg',
-    'assets/sounds/incorrect-ans3.mpeg',
-    'assets/sounds/incorrect-ans4.mpeg',
+    'assets/sounds/incorrect-ans1.mp3',
+    'assets/sounds/incorrect-ans2.mp3',
+    'assets/sounds/incorrect-ans3.mp3',
+    'assets/sounds/incorrect-ans4.mp3',
   ];
 
   static List<String> allSigns = [

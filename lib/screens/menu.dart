@@ -56,7 +56,7 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
               children: [
                 MenuRow(
                     onClick: (){
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       Get.back();
                     },
                     title: "Home",
@@ -64,14 +64,14 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                     iconSize: 28),
                 // MenuRow(
                 //     onClick: (){
-                //       audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                //       audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                 //     },
                 //     title: "Notifications",
                 //     iconPath: "assets/images/notification-icon.png",
                 //     iconSize: 29),
                 MenuRow(
                     onClick: () async{
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
                       Get.off(const HowToPlay());
                     },
@@ -80,7 +80,7 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                     iconSize: 27),
                 MenuRow(
                     onClick: (){
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       openUrl(link: Platform.isAndroid ? 'https://play.google.com/store/apps/details?id=com.appwiththat.whatsignisthis' : 'https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
                     },
                     title: "Rate Us",
@@ -88,7 +88,7 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                     iconSize: 28),
                 MenuRow(
                     onClick: (){
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       Share.share(Platform.isAndroid ? 'LMFAO! This app is JOKES! https://play.google.com/store/apps/details?id=com.appwiththat.whatsignisthis' : 'LMFAO! This app is JOKES! https://apps.apple.com/us/app/what-zodiac-sign-is-this-quiz/id6468937334');
                     },
                     title: "Share App",
@@ -96,7 +96,7 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                     iconSize: 28),
                 MenuRow(
                     onClick: () async{
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       Get.back();
                       Get.find<HomeController>().isLoading.value = true;
                       await subscriptionController.restorePurchases();
@@ -107,7 +107,7 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                     iconSize: 29),
                 MenuRow(
                     onClick: (){
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       openUrl(link: 'https://www.WhatZodiacSignIsThis.com/terms');
                     },
                     title: "Terms Of Service",
@@ -115,7 +115,7 @@ class _MenuBottomSheetState extends State<MenuBottomSheet> {
                     iconSize: 27),
                 MenuRow(
                     onClick: (){
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       openUrl(link: 'https://www.WhatZodiacSignIsThis.com/contact');
                     },
                     title: "Contact Us",

@@ -35,7 +35,7 @@ class _HowToPlayState extends State<HowToPlay> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      audioService.playSound(audioPath: 'assets/sounds/button-press.mpeg');
+                      audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
                       Get.back();
                     },
                     child: const Align(
