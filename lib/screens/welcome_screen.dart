@@ -8,6 +8,7 @@ import 'package:whatsignisthis/screens/home_screen.dart';
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
 import '../utils/functions/open_url.dart';
+import '../utils/functions/request_tracking_permission_ios.dart';
 import '../utils/leader_board/add_score_to_leaderboard.dart';
 import '../utils/variables.dart';
 import 'onboarding/onboarding.dart';
@@ -32,6 +33,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     super.initState();
     initialize();
     fetchSubscriptionPrice();
+    requestTrackingPermission();
   }
 
   Future<void> initialize() async {

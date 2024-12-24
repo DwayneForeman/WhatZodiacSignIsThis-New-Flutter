@@ -2,6 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<key>NSUserTrackingUsageDescription</key>
+<string>We use your data to provide a better experience and personalized content.</string>
+
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>notification_task</string>
@@ -70,7 +73,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 
-	<key>FacebookAppID</key>
+	    <key>FacebookAppID</key>
         <string>877875347067429</string>
         <key>FacebookClientToken</key>
         <string>b37daf6e0dae2f89ef7fa80553141f2c</string>

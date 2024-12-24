@@ -1,4 +1,6 @@
 PODS:
+  - app_tracking_transparency (0.0.1):
+    - Flutter
   - audio_session (0.0.1):
     - Flutter
   - facebook_app_events (0.0.1):
@@ -46,6 +48,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
   - Flutter (from `Flutter`)
@@ -71,6 +74,8 @@ SPEC REPOS:
     - RevenueCat
 
 EXTERNAL SOURCES:
+  app_tracking_transparency:
+    :path: ".symlinks/plugins/app_tracking_transparency/ios"
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
   facebook_app_events:
@@ -101,6 +106,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/workmanager/ios"
 
 SPEC CHECKSUMS:
+  app_tracking_transparency: e169b653478da7bb15a6c61209015378ca73e375
   audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
   facebook_app_events: c913b6757053494b19db1648a07ab755f0d3bf74
   FBAEMKit: 58cb5f302cdd715a56d4c1d0dfdd2e423ac1421a
