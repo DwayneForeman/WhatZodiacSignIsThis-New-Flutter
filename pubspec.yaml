@@ -46,15 +46,19 @@ dependencies:
   games_services: ^4.0.3
   purchases_flutter: ^8.3.0
   flutter_local_notifications: ^18.0.0
-  workmanager: ^0.5.2
+  #workmanager: ^0.5.2
   webview_flutter: ^4.10.0
   http: ^1.2.2
   sqflite: ^2.4.1
   app_tracking_transparency: ^2.0.6+1
-  facebook_app_events: #need to run 'pod update FBAudienceNetwork' first in ios for this pkg
+  facebook_app_events: #need to run 'pod update FBAudienceNetwork' in ios for this pkg if gives error
     git:
       url: https://github.com/oddbit/flutter_facebook_app_events
       ref: 3e4e062ded3eb92b37e43c274ee84da4a21edfa2
+  workmanager:
+    git:
+      url: https://github.com/fluttercommunity/flutter_workmanager.git
+      ref: b783000
 
 dev_dependencies:
   flutter_test:

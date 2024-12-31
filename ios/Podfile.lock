@@ -25,7 +25,7 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (8.3.2):
+  - purchases_flutter (8.4.0):
     - Flutter
     - PurchasesHybridCommon (= 13.13.0)
   - PurchasesHybridCommon (13.13.0):
@@ -118,7 +118,7 @@ SPEC CHECKSUMS:
   games_services: 9d174ae29e8de7aa3f511bc00fedd7006594063f
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  purchases_flutter: 863da2ed8084053125cefd78524aa8e4047e1cb3
+  purchases_flutter: 14969127a5cc8a1abe7addcf00cd0ee874877c38
   PurchasesHybridCommon: a712dcce0d81fa39dada521292408816146ca58c
   RevenueCat: 34f4147c8d26d2f3c691be4e3c9f033698e557f2
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f

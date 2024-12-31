@@ -1,6 +1,6 @@
- import Flutter
- import UIKit
- import workmanager
+import Flutter
+import UIKit
+import workmanager
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -9,36 +9,21 @@
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
 
-   // Set the plugin registrant callback for Workmanager
-      WorkmanagerPlugin.setPluginRegistrantCallback { registry in
-        GeneratedPluginRegistrant.register(with: registry)
-      }
-
+    // Register Flutter plugins
     GeneratedPluginRegistrant.register(with: self)
+
+    //WorkmanagerPlugin.registerPeriodicTask(with: self.registrar(forPlugin: "com.AppWithThat.WhatZodiacSignIsThis.workmanager.WorkmanagerPlugin")!)
+
+//Register periodic tasks
+    WorkmanagerPlugin.registerPeriodicTask(
+        withIdentifier: "com.whatsignisthis.morningNotification",
+        frequency: NSNumber(value: 24 * 60 * 60) // 24 hours
+    )
+    WorkmanagerPlugin.registerPeriodicTask(
+        withIdentifier: "com.whatsignisthis.eveningNotification",
+        frequency: NSNumber(value: 24 * 60 * 60) // 24 hours
+    )
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
-//import Flutter
-//import UIKit
-//import workmanager
-
-// @main
-// @objc class AppDelegate: FlutterAppDelegate {
-//   override func application(
-//     _ application: UIApplication,
-//     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-//   ) -> Bool {
-//     // Register the Workmanager plugin
-//     WorkmanagerPlugin.register(with: self.registrar(forPlugin: "WorkmanagerPlugin")!)
-//
-//     // Set the plugin registrant callback
-//     WorkmanagerPlugin.setPluginRegistrantCallback { registry in
-//       GeneratedPluginRegistrant.register(with: registry)
-//     }
-//
-//     // Register all plugins
-//     GeneratedPluginRegistrant.register(with: self)
-//     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-//   }
-// }
-//
