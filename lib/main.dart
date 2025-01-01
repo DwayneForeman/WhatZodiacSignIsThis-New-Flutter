@@ -23,13 +23,6 @@ void main() async {
   ]);
   Get.put(GlobalVariables());
 
-  //int initialDelay = getDifferenceToNext8PMInSeconds();
-  // Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-  //
-  // Workmanager().registerPeriodicTask(
-  //   initialDelay: Duration(seconds: initialDelay), "2", "EveningNotification", frequency: const Duration(days: 1),
-  // );
-
   int eveningDelay = getDifferenceToNext8PMInSeconds();
   int morningDelay = getDifferenceToNext8AMInSeconds();
   String timezone = getCurrentTimeZone();
@@ -37,20 +30,20 @@ void main() async {
 
   await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
-  // Morning notification task
+  //Morning notification task
   Workmanager().registerPeriodicTask(
     "1",
-    "MorningNotification",
+    "morningNotification",
     initialDelay: Duration(seconds: morningDelay),
-    frequency: const Duration(seconds: 86400),
+    frequency: const Duration(seconds: 60*24*24),
   );
 
   // Evening notification task
   Workmanager().registerPeriodicTask(
     "2",
-    "EveningNotification",
+    "eveningNotification",
     initialDelay: Duration(seconds: eveningDelay),
-    frequency: const Duration(seconds: 86400),
+    frequency: const Duration(seconds: 60*24*24),
   );
 
   runApp(const MyApp());

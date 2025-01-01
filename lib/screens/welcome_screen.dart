@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
@@ -5,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:whatsignisthis/screens/home_screen.dart';
 
+import '../notifications/ios_permission.dart';
 import '../subscription/subscription_controller.dart';
 import '../utils/audio_service/audio_services.dart';
 import '../utils/functions/open_url.dart';
@@ -33,7 +36,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     super.initState();
     initialize();
     fetchSubscriptionPrice();
-    requestTrackingPermission();
+    if(Platform.isIOS) {
+      requestTrackingPermission();
+      requestNotificationPermissions();
+    }
   }
 
   Future<void> initialize() async {
