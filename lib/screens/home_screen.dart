@@ -176,43 +176,43 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         )),
                     const Spacer(flex: 3),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset('assets/images/game-icon.png', width: 25),
-                              const Text('Game', style: TextStyle(fontFamily: 'SF-Compact', color: Color(0xff84FAB0), fontWeight: FontWeight.w900, fontSize: 14))
-                            ],
-                          ),
-                          GestureDetector(
-                            onTap: () => Get.to(const HoroscopeScreen()),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset('assets/images/horoscope-icon.png', width: 26),
-                                const Text('Horoscope', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
-                              ],
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: (){
-                              Get.to(() => const WebViewScreen(url: 'https:whatsignisthis.store'));
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset('assets/images/shop-icon.png', width: 20),
-                                const Text('Shop', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 12),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.center,
+                    //         children: [
+                    //           Image.asset('assets/images/game-icon.png', width: 25),
+                    //           const Text('Game', style: TextStyle(fontFamily: 'SF-Compact', color: Color(0xff84FAB0), fontWeight: FontWeight.w900, fontSize: 14))
+                    //         ],
+                    //       ),
+                    //       GestureDetector(
+                    //         onTap: () => Get.to(const HoroscopeScreen()),
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.center,
+                    //           children: [
+                    //             Image.asset('assets/images/horoscope-icon.png', width: 26),
+                    //             const Text('Horoscope', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
+                    //           ],
+                    //         ),
+                    //       ),
+                    //       GestureDetector(
+                    //         onTap: (){
+                    //           Get.to(() => const WebViewScreen(url: 'https:whatsignisthis.store'));
+                    //         },
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.center,
+                    //           children: [
+                    //             Image.asset('assets/images/shop-icon.png', width: 20),
+                    //             const Text('Shop', style: TextStyle(fontFamily: 'SF-Compact', color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14))
+                    //           ],
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
               ),

@@ -9,6 +9,7 @@ import '../../subscription/subscription_controller.dart';
 import '../../utils/audio_service/audio_services.dart';
 import '../../utils/game_play_functions/on_level1_start.dart';
 import '../../utils/variables.dart';
+import '../home_screen.dart';
 import 'carousel_items/carousel1.dart';
 import 'carousel_items/carousel2.dart';
 import 'carousel_items/carousel3.dart';
@@ -61,7 +62,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   CarouselItem1(),
                   CarouselItem2(),
                   CarouselItem3(),
-                  CarouselItem4(),
+                  //CarouselItem4(),
                 ],
               ),
             ),
@@ -95,7 +96,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const Spacer(flex: 2),
             SmoothPageIndicator(
               controller: carouselController,
-              count: 4,
+              count: 3,
               effect: const SwapEffect(
                 activeDotColor: Color(0xffA679FF),
                 dotColor: Color(0xff828282),
@@ -116,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
 
     //On Click of Next on Last Carousel item
-    if (carouselController.page == 3) {
+    if (carouselController.page == 2) {
 
       // Set first time to false
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -126,8 +127,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // So show him first upgrade screen with close icon
       // On clicking close, he'll go to the home screen
       if(GlobalVariables.to.newInstallQuestionToShow.value != 0 && subscriptionController.entitlement.value == Entitlement.free) {
-        await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
-        Get.offAll(const UpgradeScreen(showClose: true, goBack: false));
+        // await precacheImage(const AssetImage("assets/images/how-to-play-bg.png"), context);
+        // Get.offAll(const UpgradeScreen(showClose: true, goBack: false));
+        audioService.playSound(audioPath: 'assets/sounds/button-press.mp3');
+        await precacheImage(const AssetImage("assets/images/home-bg.png"), context);
+        Get.offAll(const HomeScreen());
       }
 
       // User has premium subscription so send him to level 1
